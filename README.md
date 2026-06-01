@@ -243,4 +243,4 @@ export const productAPI = {
 
 ## License
 
-MIT  
+MIT
