@@ -152,7 +152,7 @@ CREATE TABLE orders (
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE order_items (
+CREATE TABLE order_items ( 
   id VARCHAR(36) PRIMARY KEY,
   order_id VARCHAR(36) NOT NULL,
   product_id VARCHAR(36) NOT NULL,
