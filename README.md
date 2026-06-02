@@ -108,7 +108,7 @@ app.get('/api/products', async (req, res) => {
 });
 ```
 
-### 2. MySQL Schema
+### 2. MySQL Schema  
 
 ```sql
 CREATE DATABASE ecommerce_db;
