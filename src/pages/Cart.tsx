@@ -40,7 +40,7 @@ export default function Cart() {
 
   const handleCheckout = () => {
     if (!user) {
-      navigate('/login');
+      navigate('/');
       return;
     }
     navigate('/checkout');

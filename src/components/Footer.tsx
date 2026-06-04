@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           <div className="space-y-4">
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/home" className="flex items-center gap-2">
               <ShoppingBag className="h-6 w-6 text-primary" />
               <span className="text-xl font-bold">ShopHub</span>
             </Link>

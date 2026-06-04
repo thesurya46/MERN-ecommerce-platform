@@ -353,7 +353,7 @@ export default function ProductDetail() {
             <CardContent>
               {!user ? (
                 <p className="text-muted-foreground">
-                  Please <button onClick={() => navigate('/login')} className="underline">login</button> to write a review
+                  Please <button onClick={() => navigate('/')} className="underline">login</button> to write a review
                 </p>
               ) : (
                 <form onSubmit={handleSubmitReview} className="space-y-4">

@@ -1,7 +1,28 @@
 import { Product, User, Order, Review, CartItem, FilterOptions } from '../types';
 import { mockProducts, mockReviews, mockUsers } from '../data/mockData';
+import { validateEmail, validatePassword, normalizeEmail } from '../utils/authValidation';
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+const CREDENTIALS_KEY = 'user_credentials';
+
+function getStoredCredentials(): Record<string, string> {
+  try {
+    return JSON.parse(localStorage.getItem(CREDENTIALS_KEY) || '{}');
+  } catch {
+    return {};
+  }
+}
+
+function saveCredential(email: string, password: string): void {
+  const credentials = getStoredCredentials();
+  credentials[normalizeEmail(email)] = password;
+  localStorage.setItem(CREDENTIALS_KEY, JSON.stringify(credentials));
+}
+
+function getStoredPassword(email: string): string | undefined {
+  return getStoredCredentials()[normalizeEmail(email)];
+}
 
 export const productAPI = {
   async getProducts(filters?: Partial<FilterOptions>): Promise<Product[]> {
@@ -111,9 +132,18 @@ export const authAPI = {
   async login(email: string, password: string): Promise<{ user: User; token: string }> {
     await delay(500);
 
-    const user = mockUsers.find(u => u.email === email);
-    if (!user || password !== 'password') {
-      throw new Error('Invalid credentials');
+    const emailError = validateEmail(email);
+    if (emailError) throw new Error(emailError);
+
+    const passwordError = validatePassword(password);
+    if (passwordError) throw new Error(passwordError);
+
+    const normalizedEmail = normalizeEmail(email);
+    const user = mockUsers.find((u) => normalizeEmail(u.email) === normalizedEmail);
+    const storedPassword = getStoredPassword(normalizedEmail);
+
+    if (!user || !storedPassword || storedPassword !== password) {
+      throw new Error('No account found with this email. Please register first.');
     }
 
     const token = btoa(JSON.stringify({ userId: user.id, exp: Date.now() + 86400000 }));
@@ -126,18 +156,31 @@ export const authAPI = {
   async register(email: string, password: string, name: string): Promise<{ user: User; token: string }> {
     await delay(500);
 
-    if (mockUsers.find(u => u.email === email)) {
-      throw new Error('Email already exists');
+    const emailError = validateEmail(email);
+    if (emailError) throw new Error(emailError);
+
+    const passwordError = validatePassword(password);
+    if (passwordError) throw new Error(passwordError);
+
+    if (!name.trim()) {
+      throw new Error('Full name is required');
+    }
+
+    const normalizedEmail = normalizeEmail(email);
+
+    if (mockUsers.find((u) => normalizeEmail(u.email) === normalizedEmail)) {
+      throw new Error('An account with this email already exists');
     }
 
     const newUser: User = {
       id: Date.now().toString(),
-      email,
-      name,
-      role: 'user'
+      email: normalizedEmail,
+      name: name.trim(),
+      role: 'user',
     };
 
     mockUsers.push(newUser);
+    saveCredential(normalizedEmail, password);
 
     const token = btoa(JSON.stringify({ userId: newUser.id, exp: Date.now() + 86400000 }));
     localStorage.setItem('auth_token', token);

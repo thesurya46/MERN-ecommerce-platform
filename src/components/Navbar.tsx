@@ -59,7 +59,7 @@ export default function Navbar() {
     <nav className="border-b sticky top-0 bg-background/95 backdrop-blur-md z-50 transition-colors duration-300">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 gap-2">
-          <Link to="/" className="flex items-center gap-2 shrink-0">
+          <Link to="/home" className="flex items-center gap-2 shrink-0">
             <ShoppingBag className="h-6 w-6 text-primary" />
             <span className="text-xl font-bold tracking-tight hidden sm:inline">ShopHub</span>
           </Link>

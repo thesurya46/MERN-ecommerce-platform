@@ -39,7 +39,7 @@ export default function Admin() {
 
   useEffect(() => {
     if (!isAdmin) {
-      navigate('/');
+      navigate('/home');
       return;
     }
     loadData();
