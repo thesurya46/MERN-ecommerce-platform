@@ -33,7 +33,7 @@ Located in `src/types/index.ts`:
 - CartItems: productId, quantity, product reference
 - Reviews: id, productId, userId, rating, comment, createdAt
 
-## Project Structure
+## Project Structure 
 
 ```
 src/
