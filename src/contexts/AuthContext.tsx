@@ -73,7 +73,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const updatedUser = await authAPI.updateProfile(user.id, updates);
       setUser(updatedUser);
-      toast.success('Profile updated successfully');
+      const isPhotoOnly = Object.keys(updates).length === 1 && 'avatar' in updates;
+      if (!isPhotoOnly) {
+        toast.success('Profile updated successfully');
+      }
     } catch (error: any) {
       toast.error('Failed to update profile');
       throw error;

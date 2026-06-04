@@ -18,6 +18,7 @@ export interface User {
   role: 'user' | 'admin';
   address?: string;
   phone?: string;
+  avatar?: string;
 }
 
 export interface Review {

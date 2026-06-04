@@ -280,6 +280,10 @@ export const authAPI = {
       name: updates.name?.trim() ?? user.name,
       phone: updates.phone?.trim() || undefined,
       address: updates.address?.trim() || undefined,
+      avatar:
+        updates.avatar !== undefined
+          ? updates.avatar || undefined
+          : user.avatar,
     };
 
     const index = mockUsers.findIndex((u) => u.id === userId);

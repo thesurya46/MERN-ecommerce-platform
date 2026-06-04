@@ -27,6 +27,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import SearchBar from './SearchBar';
+import UserAvatar from './UserAvatar';
 
 export default function Navbar() {
   const { user, logout, isAdmin } = useAuth();
@@ -124,9 +125,9 @@ export default function Navbar() {
 
             {user ? (
               <div className="flex items-center border rounded-full pl-0.5 pr-0.5 bg-background">
-                <Button variant="ghost" size="icon" className="rounded-full h-9 w-9" asChild>
+                <Button variant="ghost" size="icon" className="rounded-full h-9 w-9 p-0 overflow-hidden" asChild>
                   <Link to="/profile" title="My Profile" aria-label="My Profile">
-                    <User className="h-5 w-5" />
+                    <UserAvatar user={user} className="h-9 w-9" fallbackClassName="text-xs" />
                   </Link>
                 </Button>
                 <DropdownMenu modal={false}>

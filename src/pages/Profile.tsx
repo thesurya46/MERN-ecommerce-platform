@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { authAPI } from '../services/api';
 import { Button } from '../app/components/ui/button';
@@ -8,14 +8,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ap
 import { Separator } from '../app/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../app/components/ui/tabs';
 import { Badge } from '../app/components/ui/badge';
-import { User, Mail, Phone, MapPin, Save, Lock } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Save, Lock, Camera, Trash2, ImagePlus } from 'lucide-react';
 import { validateEmail, validatePassword } from '../utils/authValidation';
+import { processProfilePhoto } from '../utils/profilePhoto';
+import UserAvatar from '../components/UserAvatar';
 import { toast } from 'sonner';
 
 export default function Profile() {
   const { user, updateProfile } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState<string | undefined>();
 
   const [profile, setProfile] = useState({
     name: '',
@@ -41,8 +46,48 @@ export default function Profile() {
         phone: user.phone || '',
         address: user.address || '',
       });
+      setPhotoPreview(user.avatar);
     }
   }, [user]);
+
+  const displayUser = user
+    ? { ...user, avatar: photoPreview ?? user.avatar }
+    : null;
+
+  const handlePhotoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+
+    setIsUploadingPhoto(true);
+    try {
+      const dataUrl = await processProfilePhoto(file);
+      setPhotoPreview(dataUrl);
+      await updateProfile({ avatar: dataUrl });
+      toast.success('Profile photo updated');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Failed to upload photo';
+      toast.error(message);
+    } finally {
+      setIsUploadingPhoto(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleRemovePhoto = async () => {
+    if (!user) return;
+    setIsUploadingPhoto(true);
+    try {
+      setPhotoPreview(undefined);
+      await updateProfile({ avatar: '' });
+      toast.success('Profile photo removed');
+    } catch {
+      toast.error('Failed to remove photo');
+    } finally {
+      setIsUploadingPhoto(false);
+    }
+  };
 
   const validateProfile = () => {
     const errors: Record<string, string> = {};
@@ -119,28 +164,85 @@ export default function Profile() {
     }
   };
 
-  if (!user) return null;
+  if (!user || !displayUser) return null;
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-3xl">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">My Profile</h1>
         <p className="text-muted-foreground">
-          View and update your account details manually below.
+          Update your photo and account details below.
         </p>
       </div>
 
       <Card className="mb-6">
-        <CardContent className="pt-6 flex items-center gap-4">
-          <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center">
-            <User className="h-8 w-8 text-primary" />
+        <CardHeader>
+          <CardTitle className="text-lg">Profile Photo</CardTitle>
+          <CardDescription>
+            Upload a photo from your gallery, files, or device storage (JPG, PNG, WebP, GIF — max 5MB).
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col sm:flex-row items-center gap-6">
+            <div className="relative">
+              <UserAvatar user={displayUser} className="h-28 w-28" fallbackClassName="text-2xl" />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={isUploadingPhoto}
+                className="absolute bottom-0 right-0 h-9 w-9 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:opacity-90 transition-opacity disabled:opacity-50"
+                aria-label="Change profile photo"
+              >
+                <Camera className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-2 w-full sm:w-auto">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                className="hidden"
+                onChange={handlePhotoSelect}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full sm:w-auto"
+                disabled={isUploadingPhoto}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <ImagePlus className="h-4 w-4 mr-2" />
+                {isUploadingPhoto ? 'Uploading...' : 'Choose from device'}
+              </Button>
+              {photoPreview && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full sm:w-auto text-destructive hover:text-destructive"
+                  disabled={isUploadingPhoto}
+                  onClick={handleRemovePhoto}
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Remove photo
+                </Button>
+              )}
+              <p className="text-xs text-muted-foreground max-w-xs">
+                Opens your file picker so you can select from gallery, Google Drive, or any folder on your device.
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="font-semibold text-lg">{user.name}</p>
-            <p className="text-sm text-muted-foreground">{user.email}</p>
-            <Badge variant="outline" className="mt-1 capitalize">
-              {user.role}
-            </Badge>
+
+          <Separator className="my-6" />
+
+          <div className="flex items-center gap-4">
+            <div>
+              <p className="font-semibold text-lg">{user.name}</p>
+              <p className="text-sm text-muted-foreground">{user.email}</p>
+              <Badge variant="outline" className="mt-1 capitalize">
+                {user.role}
+              </Badge>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -215,7 +317,7 @@ export default function Profile() {
                         if (profileErrors.phone) setProfileErrors((p) => ({ ...p, phone: '' }));
                       }}
                       className="pl-9"
-                      placeholder="+1 (555) 123-4567"
+                      placeholder="+91 98765 43210"
                     />
                   </div>
                   {profileErrors.phone && (
@@ -232,7 +334,7 @@ export default function Profile() {
                       value={profile.address}
                       onChange={(e) => setProfile({ ...profile, address: e.target.value })}
                       className="pl-9"
-                      placeholder="Street, City, State, ZIP"
+                      placeholder="Street, City, State, PIN"
                     />
                   </div>
                   <p className="text-xs text-muted-foreground">
