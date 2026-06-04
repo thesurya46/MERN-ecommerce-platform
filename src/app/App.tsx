@@ -18,6 +18,7 @@ import Wishlist from '../pages/Wishlist';
 import About from '../pages/About';
 import Contact from '../pages/Contact';
 import FAQ from '../pages/FAQ';
+import Profile from '../pages/Profile';
 import Footer from '../components/Footer';
 
 function LoadingScreen() {
@@ -181,6 +182,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <Checkout />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
               </ProtectedRoute>
             }
           />

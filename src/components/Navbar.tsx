@@ -121,6 +121,10 @@ export default function Navbar() {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
+                    <User className="mr-2 h-4 w-4" />
+                    My Profile
+                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/orders')} className="cursor-pointer">
                     <Package className="mr-2 h-4 w-4" />
                     My Orders

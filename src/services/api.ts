@@ -5,6 +5,31 @@ import { validateEmail, validatePassword, normalizeEmail } from '../utils/authVa
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const CREDENTIALS_KEY = 'user_credentials';
+const REGISTERED_USERS_KEY = 'registered_users';
+
+function loadPersistedUsers(): void {
+  try {
+    const stored: User[] = JSON.parse(localStorage.getItem(REGISTERED_USERS_KEY) || '[]');
+    stored.forEach((u) => {
+      const index = mockUsers.findIndex((m) => m.id === u.id);
+      if (index >= 0) {
+        mockUsers[index] = u;
+      } else {
+        mockUsers.push(u);
+      }
+    });
+  } catch {
+    // ignore invalid storage
+  }
+}
+
+function persistRegisteredUsers(): void {
+  const credentials = getStoredCredentials();
+  const registered = mockUsers.filter((u) => credentials[normalizeEmail(u.email)]);
+  localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(registered));
+}
+
+loadPersistedUsers();
 
 function getStoredCredentials(): Record<string, string> {
   try {
@@ -181,6 +206,7 @@ export const authAPI = {
 
     mockUsers.push(newUser);
     saveCredential(normalizedEmail, password);
+    persistRegisteredUsers();
 
     const token = btoa(JSON.stringify({ userId: newUser.id, exp: Date.now() + 86400000 }));
     localStorage.setItem('auth_token', token);
@@ -205,12 +231,77 @@ export const authAPI = {
     const userStr = localStorage.getItem('current_user');
     if (!userStr) throw new Error('Not authenticated');
 
-    const user = JSON.parse(userStr);
-    const updatedUser = { ...user, ...updates };
+    const user: User = JSON.parse(userStr);
+    if (user.id !== userId) throw new Error('Not authorized');
+
+    if (updates.name !== undefined && !updates.name.trim()) {
+      throw new Error('Full name is required');
+    }
+
+    if (updates.email !== undefined) {
+      const emailError = validateEmail(updates.email);
+      if (emailError) throw new Error(emailError);
+
+      const normalizedNew = normalizeEmail(updates.email);
+      const normalizedOld = normalizeEmail(user.email);
+
+      if (normalizedNew !== normalizedOld) {
+        const taken = mockUsers.find(
+          (u) => u.id !== userId && normalizeEmail(u.email) === normalizedNew
+        );
+        if (taken) throw new Error('This email is already in use');
+
+        const credentials = getStoredCredentials();
+        const currentPassword = credentials[normalizedOld];
+        if (currentPassword) {
+          delete credentials[normalizedOld];
+          credentials[normalizedNew] = currentPassword;
+          localStorage.setItem(CREDENTIALS_KEY, JSON.stringify(credentials));
+        }
+        updates.email = normalizedNew;
+      }
+    }
+
+    const updatedUser: User = {
+      ...user,
+      ...updates,
+      id: user.id,
+      role: user.role,
+      name: updates.name?.trim() ?? user.name,
+      phone: updates.phone?.trim() || undefined,
+      address: updates.address?.trim() || undefined,
+    };
+
+    const index = mockUsers.findIndex((u) => u.id === userId);
+    if (index >= 0) {
+      mockUsers[index] = updatedUser;
+    }
+
     localStorage.setItem('current_user', JSON.stringify(updatedUser));
+    persistRegisteredUsers();
 
     return updatedUser;
-  }
+  },
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    await delay(300);
+
+    const userStr = localStorage.getItem('current_user');
+    if (!userStr) throw new Error('Not authenticated');
+
+    const user: User = JSON.parse(userStr);
+    const normalizedEmail = normalizeEmail(user.email);
+    const storedPassword = getStoredPassword(normalizedEmail);
+
+    if (!storedPassword || storedPassword !== currentPassword) {
+      throw new Error('Current password is incorrect');
+    }
+
+    const passwordError = validatePassword(newPassword);
+    if (passwordError) throw new Error(passwordError);
+
+    saveCredential(normalizedEmail, newPassword);
+  },
 };
 
 export const cartAPI = {
