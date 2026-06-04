@@ -93,7 +93,7 @@ const express = require('express');
 const mysql = require('mysql2/promise');
 const app = express();
 
-// Database connection
+// Database connection 
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'your_username',
