@@ -62,7 +62,7 @@ src/
 ├── services/
 │   └── api.ts           # Mock API services
 └── types/
-    └── index.ts         # TypeScript interfaces
+    └── index.ts         # TypeScript interfaces 
 ```
 
 ## Getting Started 
