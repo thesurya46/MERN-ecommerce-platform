@@ -12,6 +12,7 @@ import { Textarea } from '../app/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../app/components/ui/tabs';
 import { Star, ShoppingCart, Minus, Plus, ArrowLeft, Heart } from 'lucide-react';
 import { toast } from 'sonner';
+import { formatINR } from '../utils/currency';
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -209,7 +210,7 @@ export default function ProductDetail() {
             </span>
           </div>
 
-          <div className="text-4xl">${product.price.toFixed(2)}</div>
+          <div className="text-4xl font-bold">{formatINR(product.price)}</div>
 
           <p className="text-muted-foreground">{product.description}</p>
 
@@ -425,7 +426,7 @@ export default function ProductDetail() {
                     </div>
                   </CardContent>
                   <CardFooter className="p-4 pt-0 flex items-center justify-between">
-                    <div className="font-bold">${p.price.toFixed(2)}</div>
+                    <div className="font-bold">{formatINR(p.price)}</div>
                     <Button
                       size="sm"
                       variant="outline"

@@ -13,6 +13,7 @@ import { Slider } from '../app/components/ui/slider';
 import { Search, Star, ShoppingCart, Filter, Heart } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../app/components/ui/sheet';
 import { toast } from 'sonner';
+import { formatINR } from '../utils/currency';
 
 export default function Products() {
   const [searchParams] = useSearchParams();
@@ -22,7 +23,7 @@ export default function Products() {
   const [filters, setFilters] = useState<Partial<FilterOptions>>({
     category: searchParams.get('category') || 'All',
     minPrice: 0,
-    maxPrice: 500,
+    maxPrice: 50000,
     minRating: 0,
     search: searchParams.get('search') || '',
     sortBy: 'newest'
@@ -150,12 +151,13 @@ export default function Products() {
 
       <div>
         <label className="text-sm mb-2 block">
-          Price Range: ${filters.minPrice} - ${filters.maxPrice}
+          Price Range: {formatINR(filters.minPrice || 0)} - {formatINR(filters.maxPrice || 50000)}
         </label>
         <Slider
           value={[filters.minPrice || 0, filters.maxPrice || 500]}
           min={0}
-          max={500}
+          max={50000}
+          step={500}
           step={10}
           onValueChange={([min, max]) => setFilters({ ...filters, minPrice: min, maxPrice: max })}
           className="mt-2"
@@ -181,7 +183,7 @@ export default function Products() {
           setFilters({
             category: 'All',
             minPrice: 0,
-            maxPrice: 500,
+            maxPrice: 50000,
             minRating: 0,
             search: '',
             sortBy: 'newest'
@@ -306,7 +308,7 @@ export default function Products() {
                       <Badge variant="outline">{product.category}</Badge>
                     </CardContent>
                     <CardFooter className="p-4 pt-0 flex items-center justify-between">
-                      <div className="text-2xl font-bold">${product.price.toFixed(2)}</div>
+                      <div className="text-2xl font-bold">{formatINR(product.price)}</div>
                       <Button
                         onClick={(e) => handleAddToCart(product.id, e)}
                         size="sm"

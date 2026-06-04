@@ -9,6 +9,7 @@ import { Separator } from '../app/components/ui/separator';
 import { Badge } from '../app/components/ui/badge';
 import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, Tag, Truck } from 'lucide-react';
 import { toast } from 'sonner';
+import { formatINR, FREE_SHIPPING_MIN_INR, SHIPPING_FEE_INR } from '../utils/currency';
 
 const PROMO_CODES: Record<string, { discount: number; label: string }> = {
   SAVE10: { discount: 0.1, label: '10% off' },
@@ -25,7 +26,7 @@ export default function Cart() {
   const subtotal = getCartTotal();
   const discountRate = appliedPromo ? PROMO_CODES[appliedPromo]?.discount ?? 0 : 0;
   const discountAmount = subtotal * discountRate;
-  const shipping = subtotal >= 50 || subtotal === 0 ? 0 : 5.99;
+  const shipping = subtotal >= FREE_SHIPPING_MIN_INR || subtotal === 0 ? 0 : SHIPPING_FEE_INR;
   const total = subtotal - discountAmount + shipping;
 
   const handleApplyPromo = () => {
@@ -119,8 +120,8 @@ export default function Cart() {
                           <Plus className="h-4 w-4" />
                         </Button>
                       </div>
-                      <div className="text-xl">
-                        ${(item.product.price * item.quantity).toFixed(2)}
+                      <div className="text-xl font-semibold">
+                        {formatINR(item.product.price * item.quantity)}
                       </div>
                     </div>
                   </div>
@@ -152,30 +153,30 @@ export default function Cart() {
                   {appliedPromo} — {PROMO_CODES[appliedPromo].label}
                 </Badge>
               )}
-              {subtotal > 0 && subtotal < 50 && (
+              {subtotal > 0 && subtotal < FREE_SHIPPING_MIN_INR && (
                 <p className="text-xs text-muted-foreground flex items-center gap-1">
                   <Truck className="h-3.5 w-3.5" />
-                  Add ${(50 - subtotal).toFixed(2)} more for free shipping
+                  Add {formatINR(FREE_SHIPPING_MIN_INR - subtotal)} more for free shipping
                 </p>
               )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Items ({getCartItemCount()})</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>{formatINR(subtotal)}</span>
               </div>
               {discountAmount > 0 && (
                 <div className="flex justify-between text-green-600">
                   <span>Discount</span>
-                  <span>-${discountAmount.toFixed(2)}</span>
+                  <span>-{formatINR(discountAmount)}</span>
                 </div>
               )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Shipping</span>
-                <span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
+                <span>{shipping === 0 ? 'FREE' : formatINR(shipping)}</span>
               </div>
               <Separator />
               <div className="flex justify-between text-lg font-semibold">
                 <span>Total</span>
-                <span>${total.toFixed(2)}</span>
+                <span>{formatINR(total)}</span>
               </div>
             </CardContent>
             <CardFooter>

@@ -12,6 +12,7 @@ import { Separator } from '../app/components/ui/separator';
 import { RadioGroup, RadioGroupItem } from '../app/components/ui/radio-group';
 import { toast } from 'sonner';
 import { Check, CreditCard } from 'lucide-react';
+import { formatINR } from '../utils/currency';
 
 export default function Checkout() {
   const { cart, getCartTotal, clearCart } = useCart();
@@ -388,7 +389,7 @@ export default function Checkout() {
                         <span>
                           {item.product.name} x {item.quantity}
                         </span>
-                        <span>${(item.product.price * item.quantity).toFixed(2)}</span>
+                        <span>{formatINR(item.product.price * item.quantity)}</span>
                       </div>
                     ))}
                   </div>
@@ -419,14 +420,14 @@ export default function Checkout() {
                     <span className="text-muted-foreground">
                       {item.product.name} x {item.quantity}
                     </span>
-                    <span>${(item.product.price * item.quantity).toFixed(2)}</span>
+                    <span>{formatINR(item.product.price * item.quantity)}</span>
                   </div>
                 ))}
               </div>
               <Separator />
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>${getSubtotal().toFixed(2)}</span>
+                <span>{formatINR(getSubtotal())}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Shipping</span>
@@ -435,7 +436,7 @@ export default function Checkout() {
               {discountPercent > 0 && (
                 <div className="flex justify-between text-green-600 font-medium">
                   <span>Promo Discount ({appliedCode})</span>
-                  <span>-${getDiscountAmount().toFixed(2)}</span>
+                  <span>-{formatINR(getDiscountAmount())}</span>
                 </div>
               )}
               <Separator />
@@ -466,7 +467,7 @@ export default function Checkout() {
               <Separator />
               <div className="flex justify-between text-lg font-bold">
                 <span>Total</span>
-                <span>${getFinalTotal().toFixed(2)}</span>
+                <span>{formatINR(getFinalTotal())}</span>
               </div>
             </CardContent>
           </Card>

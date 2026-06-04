@@ -5,7 +5,8 @@ import { Order } from '../types';
 import { orderAPI } from '../services/api';
 import { Card, CardContent, CardHeader, CardTitle } from '../app/components/ui/card';
 import { Badge } from '../app/components/ui/badge';
-import { Package, Calendar, DollarSign } from 'lucide-react';
+import { Package, Calendar, IndianRupee } from 'lucide-react';
+import { formatINR } from '../utils/currency';
 
 export default function Orders() {
   const { user } = useAuth();
@@ -108,10 +109,10 @@ export default function Orders() {
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <DollarSign className="h-4 w-4 text-muted-foreground" />
+                    <IndianRupee className="h-4 w-4 text-muted-foreground" />
                     <div>
                       <p className="text-sm text-muted-foreground">Total</p>
-                      <p className="text-sm">${order.total.toFixed(2)}</p>
+                      <p className="text-sm font-semibold">{formatINR(order.total)}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">

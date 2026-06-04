@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Badge } from '../app/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../app/components/ui/dialog';
 import { toast } from 'sonner';
+import { formatINR } from '../utils/currency';
 import { Package, ShoppingBag, DollarSign, Users, Edit, Trash2 } from 'lucide-react';
 import { categories } from '../data/mockData';
 
@@ -172,7 +173,7 @@ export default function Admin() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl">${stats.revenue.toFixed(2)}</div>
+            <div className="text-2xl">{formatINR(stats.revenue)}</div>
           </CardContent>
         </Card>
 
@@ -226,7 +227,7 @@ export default function Admin() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <Label htmlFor="price">Price ($)</Label>
+                      <Label htmlFor="price">Price (₹ INR)</Label>
                       <Input
                         id="price"
                         type="number"
@@ -315,7 +316,7 @@ export default function Admin() {
                         </div>
                       </TableCell>
                       <TableCell>{product.category}</TableCell>
-                      <TableCell>${product.price.toFixed(2)}</TableCell>
+                      <TableCell>{formatINR(product.price)}</TableCell>
                       <TableCell>{product.stock}</TableCell>
                       <TableCell>{product.rating.toFixed(1)}</TableCell>
                       <TableCell>
@@ -367,7 +368,7 @@ export default function Admin() {
                       <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
                       <TableCell>{order.shippingAddress.fullName}</TableCell>
                       <TableCell>{order.items.length}</TableCell>
-                      <TableCell>${order.total.toFixed(2)}</TableCell>
+                      <TableCell>{formatINR(order.total)}</TableCell>
                       <TableCell>
                         <Badge>{order.status}</Badge>
                       </TableCell>

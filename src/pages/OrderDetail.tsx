@@ -7,6 +7,7 @@ import { Badge } from '../app/components/ui/badge';
 import { Button } from '../app/components/ui/button';
 import { Separator } from '../app/components/ui/separator';
 import { ArrowLeft, Package, Truck, CheckCircle, XCircle } from 'lucide-react';
+import { formatINR } from '../utils/currency';
 
 export default function OrderDetail() {
   const { id } = useParams<{ id: string }>();
@@ -178,8 +179,8 @@ export default function OrderDetail() {
                       <h3 className="mb-1">{item.product.name}</h3>
                       <p className="text-sm text-muted-foreground">Quantity: {item.quantity}</p>
                       <p className="text-sm">
-                        ${item.product.price.toFixed(2)} x {item.quantity} = $
-                        {(item.product.price * item.quantity).toFixed(2)}
+                        {formatINR(item.product.price)} x {item.quantity} ={' '}
+                        {formatINR(item.product.price * item.quantity)}
                       </p>
                     </div>
                   </div>
@@ -201,14 +202,14 @@ export default function OrderDetail() {
                     <span className="text-muted-foreground">
                       {item.product.name} x {item.quantity}
                     </span>
-                    <span>${(item.product.price * item.quantity).toFixed(2)}</span>
+                    <span>{formatINR(item.product.price * item.quantity)}</span>
                   </div>
                 ))}
               </div>
               <Separator />
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>${order.total.toFixed(2)}</span>
+                <span>{formatINR(order.total)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Shipping</span>
@@ -217,7 +218,7 @@ export default function OrderDetail() {
               <Separator />
               <div className="flex justify-between text-lg">
                 <span>Total</span>
-                <span>${order.total.toFixed(2)}</span>
+                <span>{formatINR(order.total)}</span>
               </div>
             </CardContent>
           </Card>

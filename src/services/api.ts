@@ -108,6 +108,16 @@ export const productAPI = {
     return mockProducts.filter(p => p.featured);
   },
 
+  async getBestSellers(): Promise<Product[]> {
+    await delay(200);
+    return [...mockProducts].sort((a, b) => b.reviewCount - a.reviewCount).slice(0, 8);
+  },
+
+  async getNewArrivals(): Promise<Product[]> {
+    await delay(200);
+    return [...mockProducts].slice(-8).reverse();
+  },
+
   async createProduct(product: Omit<Product, 'id'>): Promise<Product> {
     await delay(300);
     const newProduct = {

@@ -13,7 +13,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../app/components/ui/dropdown-menu';
-import { ShoppingBag, ShoppingCart, User, LogOut, Package, Settings, Heart, Sun, Moon, HelpCircle } from 'lucide-react';
+import {
+  ShoppingBag,
+  ShoppingCart,
+  User,
+  LogOut,
+  Package,
+  Settings,
+  Heart,
+  Sun,
+  Moon,
+  HelpCircle,
+  ChevronDown,
+} from 'lucide-react';
 import SearchBar from './SearchBar';
 
 export default function Navbar() {
@@ -55,6 +67,10 @@ export default function Navbar() {
     navigate('/');
   };
 
+  const goTo = (path: string) => {
+    navigate(path);
+  };
+
   return (
     <nav className="border-b sticky top-0 bg-background/95 backdrop-blur-md z-50 transition-colors duration-300">
       <div className="container mx-auto px-4">
@@ -80,12 +96,12 @@ export default function Navbar() {
               </Button>
             </Link>
 
-            <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full">
+            <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full" type="button">
               {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
             </Button>
 
             <Link to="/wishlist" className="relative">
-              <Button variant="ghost" size="icon" className="rounded-full">
+              <Button variant="ghost" size="icon" className="rounded-full" type="button">
                 <Heart className="h-5 w-5" />
                 {wishlistCount > 0 && (
                   <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-destructive text-destructive-foreground font-semibold">
@@ -96,7 +112,7 @@ export default function Navbar() {
             </Link>
 
             <Link to="/cart" className="relative">
-              <Button variant="ghost" size="icon" className="rounded-full">
+              <Button variant="ghost" size="icon" className="rounded-full" type="button">
                 <ShoppingCart className="h-5 w-5" />
                 {getCartItemCount() > 0 && (
                   <Badge className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs bg-primary text-primary-foreground font-semibold">
@@ -107,44 +123,69 @@ export default function Navbar() {
             </Link>
 
             {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-full border">
+              <div className="flex items-center border rounded-full pl-0.5 pr-0.5 bg-background">
+                <Button variant="ghost" size="icon" className="rounded-full h-9 w-9" asChild>
+                  <Link to="/profile" title="My Profile" aria-label="My Profile">
                     <User className="h-5 w-5" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuLabel>
-                    <div className="flex flex-col">
-                      <span className="font-semibold text-sm">{user.name}</span>
-                      <span className="text-xs text-muted-foreground truncate">{user.email}</span>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
-                    <User className="mr-2 h-4 w-4" />
-                    My Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/orders')} className="cursor-pointer">
-                    <Package className="mr-2 h-4 w-4" />
-                    My Orders
-                  </DropdownMenuItem>
-                  {isAdmin && (
-                    <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer">
-                      <Settings className="mr-2 h-4 w-4" />
-                      Admin Dashboard
+                  </Link>
+                </Button>
+                <DropdownMenu modal={false}>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      type="button"
+                      className="rounded-full h-8 w-8"
+                      aria-label="Account menu"
+                    >
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 z-[100]">
+                    <DropdownMenuLabel>
+                      <div className="flex flex-col">
+                        <span className="font-semibold text-sm">{user.name}</span>
+                        <span className="text-xs text-muted-foreground truncate">{user.email}</span>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onSelect={() => goTo('/profile')}
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      My Profile
                     </DropdownMenuItem>
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="text-destructive cursor-pointer">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onSelect={() => goTo('/orders')}
+                    >
+                      <Package className="mr-2 h-4 w-4" />
+                      My Orders
+                    </DropdownMenuItem>
+                    {isAdmin && (
+                      <DropdownMenuItem
+                        className="cursor-pointer"
+                        onSelect={() => goTo('/admin')}
+                      >
+                        <Settings className="mr-2 h-4 w-4" />
+                        Admin Dashboard
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="text-destructive cursor-pointer"
+                      onSelect={handleLogout}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             ) : (
-              <Link to="/login">
-                <Button>Login</Button>
+              <Link to="/">
+                <Button type="button">Login</Button>
               </Link>
             )}
           </div>

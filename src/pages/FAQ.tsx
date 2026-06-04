@@ -34,7 +34,7 @@ const faqSections = [
     items: [
       {
         q: 'How much does shipping cost?',
-        a: 'Standard shipping is FREE on orders over $50. Orders under $50 have a flat $5.99 shipping fee. Express shipping (2–3 business days) is $12.99.',
+        a: 'Standard shipping is FREE on orders over ₹999 across India. Orders under ₹999 have a flat ₹99 shipping fee. Express shipping (2–3 business days) is ₹249.',
       },
       {
         q: 'How long will delivery take?',
@@ -42,7 +42,7 @@ const faqSections = [
       },
       {
         q: 'Do you ship internationally?',
-        a: 'We currently ship within the United States. International shipping is planned for a future release — subscribe to our newsletter for updates.',
+        a: 'We currently deliver across all major cities and towns in India. Remote area delivery may take 2–3 extra business days.',
       },
     ],
   },

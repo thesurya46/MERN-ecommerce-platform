@@ -7,6 +7,7 @@ import { Button } from '../app/components/ui/button';
 import { Card, CardContent, CardFooter } from '../app/components/ui/card';
 import { Star, ShoppingCart, Trash2, Heart } from 'lucide-react';
 import { toast } from 'sonner';
+import { formatINR } from '../utils/currency';
 
 export default function Wishlist() {
   const [wishlist, setWishlist] = useState<Product[]>([]);
@@ -138,7 +139,7 @@ export default function Wishlist() {
                 </CardContent>
 
                 <CardFooter className="p-4 pt-0 flex items-center justify-between gap-4">
-                  <div className="text-lg font-bold">${product.price.toFixed(2)}</div>
+                  <div className="text-lg font-bold">{formatINR(product.price)}</div>
                   <Button
                     onClick={(e) => handleAddToCart(product, e)}
                     size="sm"
