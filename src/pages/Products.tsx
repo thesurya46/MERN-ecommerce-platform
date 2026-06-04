@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Product, FilterOptions } from '../types';
 import { productAPI, wishlistAPI } from '../services/api';
 import { useCart } from '../contexts/CartContext';
@@ -15,18 +15,29 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../a
 import { toast } from 'sonner';
 
 export default function Products() {
+  const [searchParams] = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
   const [filters, setFilters] = useState<Partial<FilterOptions>>({
-    category: 'All',
+    category: searchParams.get('category') || 'All',
     minPrice: 0,
     maxPrice: 500,
     minRating: 0,
-    search: '',
+    search: searchParams.get('search') || '',
     sortBy: 'newest'
   });
   const { addToCart } = useCart();
+
+  useEffect(() => {
+    const category = searchParams.get('category');
+    const search = searchParams.get('search');
+    setFilters((prev) => ({
+      ...prev,
+      ...(category ? { category } : {}),
+      ...(search !== null ? { search } : {}),
+    }));
+  }, [searchParams]);
 
   useEffect(() => {
     loadWishlist();

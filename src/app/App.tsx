@@ -15,6 +15,10 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import Admin from '../pages/Admin';
 import Wishlist from '../pages/Wishlist';
+import About from '../pages/About';
+import Contact from '../pages/Contact';
+import FAQ from '../pages/FAQ';
+import Footer from '../components/Footer';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -66,6 +70,9 @@ function AppContent() {
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
           <Route
             path="/checkout"
             element={
@@ -100,6 +107,7 @@ function AppContent() {
           />
         </Routes>
       </main>
+      <Footer />
       <Toaster />
     </div>
   );

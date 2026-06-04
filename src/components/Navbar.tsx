@@ -13,7 +13,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../app/components/ui/dropdown-menu';
-import { ShoppingBag, ShoppingCart, User, LogOut, Package, Settings, Heart, Sun, Moon } from 'lucide-react';
+import { ShoppingBag, ShoppingCart, User, LogOut, Package, Settings, Heart, Sun, Moon, HelpCircle } from 'lucide-react';
+import SearchBar from './SearchBar';
 
 export default function Navbar() {
   const { user, logout, isAdmin } = useAuth();
@@ -57,15 +58,26 @@ export default function Navbar() {
   return (
     <nav className="border-b sticky top-0 bg-background/95 backdrop-blur-md z-50 transition-colors duration-300">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <Link to="/" className="flex items-center gap-2">
+        <div className="flex items-center justify-between h-16 gap-2">
+          <Link to="/" className="flex items-center gap-2 shrink-0">
             <ShoppingBag className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold tracking-tight">ShopHub</span>
+            <span className="text-xl font-bold tracking-tight hidden sm:inline">ShopHub</span>
           </Link>
 
-          <div className="flex items-center gap-4">
-            <Link to="/products">
-              <Button variant="ghost">Products</Button>
+          <SearchBar />
+
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+            <Link to="/products" className="hidden lg:block">
+              <Button variant="ghost" size="sm">Products</Button>
+            </Link>
+            <Link to="/about" className="hidden xl:block">
+              <Button variant="ghost" size="sm">About</Button>
+            </Link>
+            <Link to="/faq" className="hidden xl:block">
+              <Button variant="ghost" size="sm">
+                <HelpCircle className="h-4 w-4 lg:mr-1" />
+                <span className="hidden lg:inline">FAQ</span>
+              </Button>
             </Link>
 
             <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full">

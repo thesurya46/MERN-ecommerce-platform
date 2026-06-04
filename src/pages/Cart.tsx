@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -5,12 +6,37 @@ import { Button } from '../app/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../app/components/ui/card';
 import { Input } from '../app/components/ui/input';
 import { Separator } from '../app/components/ui/separator';
-import { ShoppingCart, Trash2, Minus, Plus, ArrowRight } from 'lucide-react';
+import { Badge } from '../app/components/ui/badge';
+import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, Tag, Truck } from 'lucide-react';
+import { toast } from 'sonner';
+
+const PROMO_CODES: Record<string, { discount: number; label: string }> = {
+  SAVE10: { discount: 0.1, label: '10% off' },
+  WELCOME15: { discount: 0.15, label: '15% off' },
+};
 
 export default function Cart() {
   const { cart, updateQuantity, removeFromCart, getCartTotal, getCartItemCount } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [promoCode, setPromoCode] = useState('');
+  const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
+
+  const subtotal = getCartTotal();
+  const discountRate = appliedPromo ? PROMO_CODES[appliedPromo]?.discount ?? 0 : 0;
+  const discountAmount = subtotal * discountRate;
+  const shipping = subtotal >= 50 || subtotal === 0 ? 0 : 5.99;
+  const total = subtotal - discountAmount + shipping;
+
+  const handleApplyPromo = () => {
+    const code = promoCode.trim().toUpperCase();
+    if (PROMO_CODES[code]) {
+      setAppliedPromo(code);
+      toast.success(`Promo applied: ${PROMO_CODES[code].label}`);
+    } else {
+      toast.error('Invalid promo code. Try SAVE10 or WELCOME15');
+    }
+  };
 
   const handleCheckout = () => {
     if (!user) {
@@ -110,18 +136,46 @@ export default function Cart() {
               <CardTitle>Order Summary</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="flex gap-2">
+                <Input
+                  placeholder="Promo code"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                  className="flex-1"
+                />
+                <Button variant="outline" onClick={handleApplyPromo} type="button">
+                  <Tag className="h-4 w-4" />
+                </Button>
+              </div>
+              {appliedPromo && (
+                <Badge variant="secondary" className="w-fit">
+                  {appliedPromo} — {PROMO_CODES[appliedPromo].label}
+                </Badge>
+              )}
+              {subtotal > 0 && subtotal < 50 && (
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Truck className="h-3.5 w-3.5" />
+                  Add ${(50 - subtotal).toFixed(2)} more for free shipping
+                </p>
+              )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Items ({getCartItemCount()})</span>
-                <span>${getCartTotal().toFixed(2)}</span>
+                <span>${subtotal.toFixed(2)}</span>
               </div>
+              {discountAmount > 0 && (
+                <div className="flex justify-between text-green-600">
+                  <span>Discount</span>
+                  <span>-${discountAmount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Shipping</span>
-                <span>FREE</span>
+                <span>{shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`}</span>
               </div>
               <Separator />
-              <div className="flex justify-between text-lg">
+              <div className="flex justify-between text-lg font-semibold">
                 <span>Total</span>
-                <span>${getCartTotal().toFixed(2)}</span>
+                <span>${total.toFixed(2)}</span>
               </div>
             </CardContent>
             <CardFooter>

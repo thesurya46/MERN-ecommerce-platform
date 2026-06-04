@@ -6,8 +6,43 @@ import { useCart } from '../contexts/CartContext';
 import { Button } from '../app/components/ui/button';
 import { Card, CardContent, CardFooter } from '../app/components/ui/card';
 import { Badge } from '../app/components/ui/badge';
-import { Star, ShoppingCart, ArrowRight, Heart } from 'lucide-react';
+import {
+  Star,
+  ShoppingCart,
+  ArrowRight,
+  Heart,
+  Truck,
+  Shield,
+  RotateCcw,
+  Headphones,
+  Laptop,
+  Dumbbell,
+  Home as HomeIcon,
+  Sparkles,
+  Quote,
+} from 'lucide-react';
 import { toast } from 'sonner';
+import Newsletter from '../components/Newsletter';
+
+const categoryCards = [
+  { name: 'Electronics', slug: 'Electronics', icon: Laptop, image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=600' },
+  { name: 'Accessories', slug: 'Accessories', icon: Sparkles, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600' },
+  { name: 'Sports', slug: 'Sports', icon: Dumbbell, image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600' },
+  { name: 'Home & Kitchen', slug: 'Home & Kitchen', icon: HomeIcon, image: 'https://images.unsplash.com/photo-1556911220-bff31c812dba?w=600' },
+];
+
+const testimonials = [
+  { name: 'Sarah Mitchell', role: 'Verified Buyer', text: 'Fast shipping and exactly as described. The headphones are incredible — best purchase this year!', rating: 5 },
+  { name: 'James Chen', role: 'Verified Buyer', text: 'ShopHub has become my go-to for tech. Great prices, easy returns, and customer support actually responds.', rating: 5 },
+  { name: 'Emily Rodriguez', role: 'Verified Buyer', text: 'Love the wishlist feature and smooth checkout. Ordered a smart watch and it arrived in 4 days.', rating: 5 },
+];
+
+const trustFeatures = [
+  { icon: Truck, title: 'Free Shipping', desc: 'On all orders over $50 nationwide' },
+  { icon: Shield, title: 'Secure Payment', desc: '256-bit SSL encrypted checkout' },
+  { icon: RotateCcw, title: 'Easy Returns', desc: '30-day hassle-free return policy' },
+  { icon: Headphones, title: '24/7 Support', desc: 'Dedicated team ready to help' },
+];
 
 export default function Home() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
@@ -67,27 +102,98 @@ export default function Home() {
 
   return (
     <div className="min-h-screen">
-      <section className="bg-gradient-to-r from-primary/10 to-primary/5 py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl mb-4 font-bold">Welcome to ShopHub</h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Discover amazing products at unbeatable prices. Your one-stop shop for everything you need.
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Link to="/products">
-              <Button size="lg">
-                Browse Products
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
+      <section className="relative overflow-hidden bg-gradient-to-br from-primary/15 via-background to-primary/5">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
+        <div className="container mx-auto px-4 py-20 md:py-28 relative">
+          <div className="max-w-3xl">
+            <Badge className="mb-4" variant="secondary">New arrivals every week</Badge>
+            <h1 className="text-4xl md:text-6xl font-bold mb-4 tracking-tight">
+              Shop smarter with <span className="text-primary">ShopHub</span>
+            </h1>
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-xl leading-relaxed">
+              Premium products, honest prices, and delivery you can count on. Join 50,000+ customers who trust us for their everyday essentials.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Link to="/products">
+                <Button size="lg" className="h-12 px-8">
+                  Shop Collection
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+              <Link to="/about">
+                <Button size="lg" variant="outline" className="h-12 px-8">
+                  Learn About Us
+                </Button>
+              </Link>
+            </div>
+            <div className="flex flex-wrap gap-8 mt-10 pt-8 border-t border-border/50">
+              <div>
+                <p className="text-2xl font-bold">50K+</p>
+                <p className="text-sm text-muted-foreground">Happy customers</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold">4.8★</p>
+                <p className="text-sm text-muted-foreground">Average rating</p>
+              </div>
+              <div>
+                <p className="text-2xl font-bold">Free</p>
+                <p className="text-sm text-muted-foreground">Shipping over $50</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y bg-muted/30 py-6">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {trustFeatures.map(({ icon: Icon, title, desc }) => (
+              <div key={title} className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <Icon className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <p className="font-semibold text-sm">{title}</p>
+                  <p className="text-xs text-muted-foreground">{desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       <section className="container mx-auto px-4 py-16">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-bold mb-2">Shop by Category</h2>
+          <p className="text-muted-foreground">Find exactly what you need, faster</p>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          {categoryCards.map(({ name, slug, icon: Icon, image }) => (
+            <Link key={slug} to={`/products?category=${encodeURIComponent(slug)}`}>
+              <Card className="overflow-hidden group hover:shadow-lg transition-all h-full">
+                <div className="aspect-[4/3] overflow-hidden relative">
+                  <img
+                    src={image}
+                    alt={name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4 flex items-center gap-2 text-white">
+                    <Icon className="h-5 w-5" />
+                    <span className="font-semibold">{name}</span>
+                    <ArrowRight className="h-4 w-4 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                </div>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="container mx-auto px-4 py-8 pb-16">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-3xl mb-2">Featured Products</h2>
+            <h2 className="text-3xl font-bold mb-2">Featured Products</h2>
             <p className="text-muted-foreground">Handpicked favorites just for you</p>
           </div>
           <Link to="/products">
@@ -160,25 +266,49 @@ export default function Home() {
 
       <section className="bg-muted/50 py-16">
         <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8 text-center">
-            <div className="space-y-2">
-              <div className="text-4xl mb-2">🚚</div>
-              <h3 className="text-xl">Free Shipping</h3>
-              <p className="text-muted-foreground">On all orders over $50</p>
-            </div>
-            <div className="space-y-2">
-              <div className="text-4xl mb-2">🔒</div>
-              <h3 className="text-xl">Secure Payment</h3>
-              <p className="text-muted-foreground">100% secure transactions</p>
-            </div>
-            <div className="space-y-2">
-              <div className="text-4xl mb-2">⭐</div>
-              <h3 className="text-xl">Top Quality</h3>
-              <p className="text-muted-foreground">Guaranteed satisfaction</p>
-            </div>
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold mb-2">What Our Customers Say</h2>
+            <p className="text-muted-foreground">Real reviews from real shoppers</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {testimonials.map((t) => (
+              <Card key={t.name} className="relative">
+                <CardContent className="pt-8 pb-6">
+                  <Quote className="h-8 w-8 text-primary/20 absolute top-4 right-4" />
+                  <div className="flex gap-1 mb-4">
+                    {Array.from({ length: t.rating }).map((_, i) => (
+                      <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <p className="text-muted-foreground mb-4 leading-relaxed">&ldquo;{t.text}&rdquo;</p>
+                  <p className="font-semibold">{t.name}</p>
+                  <p className="text-sm text-muted-foreground">{t.role}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
+
+      <section className="container mx-auto px-4 py-16">
+        <Card className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground overflow-hidden">
+          <CardContent className="py-10 px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <p className="text-sm opacity-90 mb-1">Limited time offer</p>
+              <h2 className="text-2xl md:text-3xl font-bold">Use code SAVE10 at checkout</h2>
+              <p className="opacity-90 mt-2">Get 10% off your first order. Valid for new customers.</p>
+            </div>
+            <Link to="/products">
+              <Button size="lg" variant="secondary">
+                Shop Now
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </section>
+
+      <Newsletter />
     </div>
   );
 }

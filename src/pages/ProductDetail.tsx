@@ -268,11 +268,55 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      <Tabs defaultValue="reviews" className="w-full">
+      <Tabs defaultValue="description" className="w-full">
         <TabsList>
+          <TabsTrigger value="description">Description</TabsTrigger>
+          <TabsTrigger value="specs">Specifications</TabsTrigger>
           <TabsTrigger value="reviews">Reviews ({reviews.length})</TabsTrigger>
           <TabsTrigger value="write-review">Write a Review</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="description">
+          <Card>
+            <CardContent className="pt-6 space-y-4">
+              <p className="text-muted-foreground leading-relaxed">{product.description}</p>
+              <ul className="text-sm text-muted-foreground space-y-2 list-disc list-inside">
+                <li>Authentic product backed by manufacturer warranty</li>
+                <li>Ships within 1–2 business days from our warehouse</li>
+                <li>30-day return policy on unused items</li>
+              </ul>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="specs">
+          <Card>
+            <CardContent className="pt-6">
+              <dl className="grid sm:grid-cols-2 gap-4 text-sm">
+                <div className="flex justify-between py-2 border-b">
+                  <dt className="text-muted-foreground">Category</dt>
+                  <dd className="font-medium">{product.category}</dd>
+                </div>
+                <div className="flex justify-between py-2 border-b">
+                  <dt className="text-muted-foreground">SKU</dt>
+                  <dd className="font-medium">SH-{product.id.padStart(5, '0')}</dd>
+                </div>
+                <div className="flex justify-between py-2 border-b">
+                  <dt className="text-muted-foreground">Availability</dt>
+                  <dd className="font-medium">{product.stock > 0 ? 'In Stock' : 'Out of Stock'}</dd>
+                </div>
+                <div className="flex justify-between py-2 border-b">
+                  <dt className="text-muted-foreground">Rating</dt>
+                  <dd className="font-medium">{product.rating.toFixed(1)} / 5 ({product.reviewCount} reviews)</dd>
+                </div>
+                <div className="flex justify-between py-2 border-b sm:col-span-2">
+                  <dt className="text-muted-foreground">Warranty</dt>
+                  <dd className="font-medium">1-year limited manufacturer warranty</dd>
+                </div>
+              </dl>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
         <TabsContent value="reviews" className="space-y-4">
           {reviews.length === 0 ? (
