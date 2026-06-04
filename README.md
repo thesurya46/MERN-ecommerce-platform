@@ -1,4 +1,4 @@
-# E-Commerce Platform  
+# E-Commerce Platform 
 
 A full-featured e-commerce platform built with React, TypeScript, and Tailwind CSS. Features product browsing, shopping cart, checkout flow, order tracking, and admin dashboard.
 
