@@ -134,7 +134,7 @@ CREATE TABLE products (
   category VARCHAR(100),
   stock INT DEFAULT 0,
   images JSON,
-  rating DECIMAL(3, 2) DEFAULT 0,
+  rating DECIMAL(3, 2) DEFAULT 0, 
   review_count INT DEFAULT 0,
   featured BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
