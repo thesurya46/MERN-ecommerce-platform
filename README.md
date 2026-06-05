@@ -96,7 +96,7 @@ const app = express();
 // Database connection 
 const pool = mysql.createPool({
   host: 'localhost',
-  user: 'your_username',
+  user: 'your_username', 
   password: 'your_password',
   database: 'ecommerce_db'
 });
