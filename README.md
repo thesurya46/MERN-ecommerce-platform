@@ -101,7 +101,7 @@ const pool = mysql.createPool({
   database: 'ecommerce_db'
 });
 
-// Example product endpoint
+// Example product endpoint       
 app.get('/api/products', async (req, res) => {
   const [rows] = await pool.query('SELECT * FROM products');
   res.json(rows);
