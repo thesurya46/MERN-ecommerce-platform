@@ -59,7 +59,7 @@ src/
 │   ├── Login.tsx        # Login page
 │   ├── Register.tsx     # Registration page
 │   └── Admin.tsx        # Admin dashboard
-├── services/
+├── services/  
 │   └── api.ts           # Mock API services
 └── types/             
     └── index.ts         # TypeScript interfaces 
