@@ -61,7 +61,7 @@ src/
 │   └── Admin.tsx        # Admin dashboard
 ├── services/
 │   └── api.ts           # Mock API services
-└── types/
+└── types/             
     └── index.ts         # TypeScript interfaces 
 ```
 
