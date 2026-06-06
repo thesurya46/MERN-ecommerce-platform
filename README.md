@@ -55,7 +55,7 @@ src/
 │   ├── Cart.tsx         # Shopping cart
 │   ├── Checkout.tsx     # Multi-step checkout
 │   ├── Orders.tsx       # Order history
-│   ├── OrderDetail.tsx  # Order tracking
+│   ├── OrderDetail.tsx  # Order tracking 
 │   ├── Login.tsx        # Login page
 │   ├── Register.tsx     # Registration page
 │   └── Admin.tsx        # Admin dashboard
