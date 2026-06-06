@@ -81,7 +81,7 @@ The Vite dev server is already running in this environment. The application will
 
 ## Connecting to MySQL Database
 
-The current implementation uses localStorage and mock data. To connect to a MySQL database: 
+The current implementation uses localStorage and mock data. To connect to a MySQL database:  
 
 ### 1. Backend Setup (Node.js/Express)
 
