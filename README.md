@@ -4,7 +4,7 @@ A full-featured e-commerce platform built with React, TypeScript, and Tailwind C
 
 ## Features
  
-### Frontend Features
+### Frontend Features 
 - **Product Catalog**: Grid view with filtering by category, price range, and ratings 
 - **Advanced Search**: Real-time search with sorting options (price, rating, newest)
 - **Product Detail Pages**: Full product information, multiple images, reviews, and ratings 
