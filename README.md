@@ -69,7 +69,7 @@ src/
 
 ### Installation
 ```bash
-pnpm install
+pnpm install 
 ```
 
 ### Running the Application
