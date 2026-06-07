@@ -44,7 +44,7 @@ src/
 ├── components/
 │   └── Navbar.tsx       # Navigation bar
 ├── contexts/
-│   ├── AuthContext.tsx  # Authentication state management
+│   ├── AuthContext.tsx  # Authentication state management 
 │   └── CartContext.tsx  # Shopping cart state management
 ├── data/
 │   └── mockData.ts      # Mock product data and reviews
