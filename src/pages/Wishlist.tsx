@@ -74,13 +74,19 @@ export default function Wishlist() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex items-center gap-3 mb-8">
-        <Heart className="h-8 w-8 text-destructive fill-destructive" />
-        <h1 className="text-3xl">My Wishlist</h1>
-      </div>
+    <div className="min-h-screen">
+      <section className="bg-gradient-to-br from-rose-500/10 via-background to-primary/5 py-12">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center gap-3 mb-2">
+            <Heart className="h-8 w-8 text-destructive fill-destructive" />
+            <h1 className="text-3xl font-bold">My Wishlist</h1>
+          </div>
+          <p className="text-muted-foreground">{wishlist.length} items saved for later</p>
+        </div>
+      </section>
 
-      {wishlist.length === 0 ? (
+      <div className="container mx-auto px-4 py-12">
+        {wishlist.length === 0 ? (
         <Card className="p-12 text-center border-dashed">
           <div className="text-5xl mb-4">❤️</div>
           <h2 className="text-xl font-medium mb-2">Your wishlist is empty</h2>
@@ -92,10 +98,10 @@ export default function Wishlist() {
           </Link>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {wishlist.map((product) => (
             <Link key={product.id} to={`/product/${product.id}`}>
-              <Card className="overflow-hidden hover:shadow-lg transition-shadow h-full flex flex-col relative group">
+              <Card className="overflow-hidden hover:shadow-2xl transition-all duration-300 h-full flex flex-col relative group border-none ring-1 ring-border">
                 <Button
                   variant="destructive"
                   size="icon"
@@ -138,12 +144,12 @@ export default function Wishlist() {
                   </div>
                 </CardContent>
 
-                <CardFooter className="p-4 pt-0 flex items-center justify-between gap-4">
+                <CardFooter className="p-4 pt-0 flex items-center justify-between gap-3">
                   <div className="text-lg font-bold">{formatINR(product.price)}</div>
                   <Button
                     onClick={(e) => handleAddToCart(product, e)}
                     size="sm"
-                    className="flex-1"
+                    className="flex-1 shadow-md shadow-primary/10"
                     disabled={product.stock === 0}
                   >
                     <ShoppingCart className="h-4 w-4 mr-2" />

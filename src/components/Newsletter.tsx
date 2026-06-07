@@ -48,9 +48,10 @@ export default function Newsletter({ compact = false }: NewsletterProps) {
   }
 
   return (
-    <section className="bg-primary text-primary-foreground py-16">
+    <section className="bg-gradient-to-br from-primary via-indigo-600 to-purple-700 text-primary-foreground py-20 relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_120%,rgba(255,255,255,0.1),transparent)]" />
       <div className="container mx-auto px-4 text-center">
-        <Mail className="h-10 w-10 mx-auto mb-4 opacity-90" />
+        <Mail className="h-12 w-12 mx-auto mb-6 opacity-80" />
         <h2 className="text-2xl md:text-3xl font-bold mb-2">Subscribe to Our Newsletter</h2>
         <p className="opacity-90 mb-6 max-w-md mx-auto">
           Be the first to know about sales, new products, and member-only discounts.

@@ -96,20 +96,22 @@ const faqSections = [
 
 export default function FAQ() {
   return (
-    <div className="container mx-auto px-4 py-12 max-w-3xl">
-      <div className="text-center mb-12">
-        <HelpCircle className="h-12 w-12 mx-auto text-primary mb-4" />
-        <h1 className="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
-        <p className="text-muted-foreground">
-          Find answers to common questions. Still need help?{' '}
-          <Link to="/contact" className="text-primary underline hover:no-underline">
-            Contact our team
-          </Link>
-          .
-        </p>
-      </div>
+    <div className="min-h-screen">
+      <section className="bg-gradient-to-br from-primary/10 via-background to-indigo-500/5 py-16">
+        <div className="container mx-auto px-4 text-center max-w-3xl">
+          <HelpCircle className="h-12 w-12 mx-auto text-primary mb-4 opacity-80" />
+          <h1 className="text-4xl font-bold mb-4">Frequently Asked Questions</h1>
+          <p className="text-lg text-muted-foreground">
+            Find answers to common questions about orders, shipping, and returns. Still need help?{' '}
+            <Link to="/contact" className="text-primary font-semibold underline hover:no-underline">
+              Contact our team
+            </Link>
+            .
+          </p>
+        </div>
+      </section>
 
-      <div className="space-y-10">
+      <div className="container mx-auto px-4 py-12 max-w-3xl space-y-10">
         {faqSections.map((section) => (
           <section key={section.id} id={section.id}>
             <h2 className="text-xl font-semibold mb-4">{section.title}</h2>
@@ -125,16 +127,17 @@ export default function FAQ() {
             </Accordion>
           </section>
         ))}
-      </div>
 
-      <Card className="mt-12">
-        <CardContent className="pt-6 text-center">
-          <p className="text-muted-foreground mb-4">Didn&apos;t find what you were looking for?</p>
-          <Link to="/contact">
-            <Button>Get in Touch</Button>
-          </Link>
-        </CardContent>
-      </Card>
+        <Card className="mt-12 bg-gradient-to-r from-primary/5 to-indigo-500/5 border-none ring-1 ring-border">
+          <CardContent className="pt-8 pb-8 text-center">
+            <h3 className="text-xl font-bold mb-2">Still have questions?</h3>
+            <p className="text-muted-foreground mb-6">Our dedicated support team is available 24/7 to assist you.</p>
+            <Link to="/contact">
+              <Button size="lg" className="shadow-lg shadow-primary/10">Get in Touch</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

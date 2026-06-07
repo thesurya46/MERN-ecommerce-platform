@@ -50,10 +50,10 @@ export default function About() {
       <section className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {stats.map((stat) => (
-            <Card key={stat.label} className="text-center">
+            <Card key={stat.label} className="text-center border-none ring-1 ring-border shadow-sm hover:shadow-md transition-shadow">
               <CardContent className="pt-6 pb-6">
-                <div className="text-3xl font-bold text-primary mb-1">{stat.value}</div>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
+                <div className="text-3xl font-bold bg-gradient-to-r from-primary to-indigo-600 bg-clip-text text-transparent mb-1">{stat.value}</div>
+                <p className="text-xs uppercase tracking-widest font-semibold text-muted-foreground">{stat.label}</p>
               </CardContent>
             </Card>
           ))}

@@ -167,15 +167,18 @@ export default function Profile() {
   if (!user || !displayUser) return null;
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">My Profile</h1>
-        <p className="text-muted-foreground">
-          Update your photo and account details below.
-        </p>
-      </div>
+    <div className="min-h-screen bg-muted/20">
+      <section className="bg-gradient-to-br from-primary/15 via-background to-indigo-500/10 py-12 border-b">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <h1 className="text-3xl font-bold mb-2">Account Settings</h1>
+          <p className="text-muted-foreground">
+            Manage your personal information, security, and preferences.
+          </p>
+        </div>
+      </section>
 
-      <Card className="mb-6">
+      <div className="container mx-auto px-4 py-10 max-w-3xl">
+      <Card className="mb-8 border-none ring-1 ring-border shadow-sm">
         <CardHeader>
           <CardTitle className="text-lg">Profile Photo</CardTitle>
           <CardDescription>

@@ -26,19 +26,23 @@ export default function Contact() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="text-center max-w-2xl mx-auto mb-12">
-        <h1 className="text-4xl font-bold mb-4">Contact Us</h1>
-        <p className="text-muted-foreground">
-          Have a question about your order, a product, or partnership? Our team is ready to help.
-        </p>
-      </div>
+    <div className="min-h-screen">
+      <section className="bg-gradient-to-br from-indigo-500/10 via-background to-primary/5 py-16">
+        <div className="container mx-auto px-4 text-center max-w-2xl">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-indigo-600 bg-clip-text text-transparent">Contact Us</h1>
+          <p className="text-lg text-muted-foreground">
+            Have a question about your order, a product, or partnership? Our team is ready to help 24/7.
+          </p>
+        </div>
+      </section>
 
-      <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      <div className="container mx-auto px-4 py-12 grid lg:grid-cols-3 gap-8 max-w-6xl">
         <div className="space-y-4">
-          <Card>
+          <Card className="border-none ring-1 ring-border shadow-sm">
             <CardContent className="pt-6 flex gap-4">
-              <Mail className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Mail className="h-5 w-5 text-primary" />
+              </div>
               <div>
                 <p className="font-medium">Email</p>
                 <a href="mailto:support@shophub.com" className="text-sm text-muted-foreground hover:text-foreground">
@@ -47,9 +51,11 @@ export default function Contact() {
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="border-none ring-1 ring-border shadow-sm">
             <CardContent className="pt-6 flex gap-4">
-              <Phone className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Phone className="h-5 w-5 text-primary" />
+              </div>
               <div>
                 <p className="font-medium">Phone</p>
                 <p className="text-sm text-muted-foreground">Mon–Fri, 9am–6pm EST</p>
@@ -57,9 +63,11 @@ export default function Contact() {
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="border-none ring-1 ring-border shadow-sm">
             <CardContent className="pt-6 flex gap-4">
-              <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <MapPin className="h-5 w-5 text-primary" />
+              </div>
               <div>
                 <p className="font-medium">Office</p>
                 <p className="text-sm text-muted-foreground">
@@ -69,9 +77,11 @@ export default function Contact() {
               </div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="border-none ring-1 ring-border shadow-sm">
             <CardContent className="pt-6 flex gap-4">
-              <Clock className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+              <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                <Clock className="h-5 w-5 text-primary" />
+              </div>
               <div>
                 <p className="font-medium">Response Time</p>
                 <p className="text-sm text-muted-foreground">Average reply within 24 hours</p>
@@ -80,7 +90,7 @@ export default function Contact() {
           </Card>
         </div>
 
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 shadow-xl border-none ring-1 ring-border">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <MessageSquare className="h-5 w-5" />
@@ -137,7 +147,7 @@ export default function Contact() {
                   required
                 />
               </div>
-              <Button type="submit" size="lg" className="w-full sm:w-auto">
+              <Button type="submit" size="lg" className="w-full sm:w-auto shadow-lg shadow-primary/20">
                 Send Message
               </Button>
             </form>
