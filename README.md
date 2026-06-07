@@ -38,7 +38,7 @@ Located in `src/types/index.ts`:
 ```
 src/
 ├── app/
-│   ├── components/
+│   ├── components/ 
 │   │   └── ui/          # Shadcn/ui components
 │   └── App.tsx          # Main app with routing
 ├── components/
