@@ -154,11 +154,10 @@ export default function Products() {
           Price Range: {formatINR(filters.minPrice || 0)} - {formatINR(filters.maxPrice || 50000)}
         </label>
         <Slider
-          value={[filters.minPrice || 0, filters.maxPrice || 500]}
+          value={[filters.minPrice || 0, filters.maxPrice || 50000]}
           min={0}
           max={50000}
           step={500}
-          step={10}
           onValueChange={([min, max]) => setFilters({ ...filters, minPrice: min, maxPrice: max })}
           className="mt-2"
         />

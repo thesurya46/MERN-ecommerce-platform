@@ -17,6 +17,16 @@ import { toast } from 'sonner';
 import { formatINR } from '../utils/currency';
 import { Package, ShoppingBag, DollarSign, Users, Edit, Trash2 } from 'lucide-react';
 import { categories } from '../data/mockData';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+
+const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#0088fe', '#00c49f', '#ffbb28', '#ff8042'];
+const STATUS_COLORS: { [key: string]: string } = {
+  pending: '#ffbb28',
+  processing: '#0088fe',
+  shipped: '#00c49f',
+  delivered: '#22c55e',
+  cancelled: '#ef4444'
+};
 
 export default function Admin() {
   const { user, isAdmin } = useAuth();
@@ -140,6 +150,49 @@ export default function Admin() {
     pendingOrders: orders.filter(o => o.status === 'pending').length
   };
 
+  const getCategoryData = () => {
+    const categoriesMap: { [key: string]: number } = {};
+    orders.forEach(order => {
+      order.items.forEach(item => {
+        const cat = item.product.category || 'Uncategorized';
+        categoriesMap[cat] = (categoriesMap[cat] || 0) + (item.product.price * item.quantity);
+      });
+    });
+    return Object.keys(categoriesMap).map(cat => ({
+      name: cat,
+      value: parseFloat(categoriesMap[cat].toFixed(2))
+    }));
+  };
+
+  const getDailyRevenueData = () => {
+    const dailyMap: { [key: string]: number } = {};
+    orders.forEach(order => {
+      const date = new Date(order.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+      dailyMap[date] = (dailyMap[date] || 0) + order.total;
+    });
+    return Object.keys(dailyMap).map(date => ({
+      date,
+      revenue: parseFloat(dailyMap[date].toFixed(2))
+    })).reverse();
+  };
+
+  const getStatusData = () => {
+    const statusMap: { [key: string]: number } = {
+      pending: 0,
+      processing: 0,
+      shipped: 0,
+      delivered: 0,
+      cancelled: 0
+    };
+    orders.forEach(order => {
+      statusMap[order.status] = (statusMap[order.status] || 0) + 1;
+    });
+    return Object.keys(statusMap).map(status => ({
+      name: status.charAt(0).toUpperCase() + status.slice(1),
+      value: statusMap[status]
+    })).filter(item => item.value > 0);
+  };
+
   if (!isAdmin) return null;
 
   return (
@@ -192,6 +245,7 @@ export default function Admin() {
         <TabsList>
           <TabsTrigger value="products">Products</TabsTrigger>
           <TabsTrigger value="orders">Orders</TabsTrigger>
+          <TabsTrigger value="analytics">Analytics</TabsTrigger>
         </TabsList>
 
         <TabsContent value="products" className="space-y-4">
@@ -397,6 +451,87 @@ export default function Admin() {
               </Table>
             </CardContent>
           </Card>
+        </TabsContent>
+        <TabsContent value="analytics" className="space-y-6">
+          <h2 className="text-xl font-bold">Business Analytics</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Sales Trend */}
+            <Card className="border border-border/60 bg-card/50 backdrop-blur-md">
+              <CardHeader>
+                <CardTitle className="text-base font-semibold">Sales Revenue Trend</CardTitle>
+              </CardHeader>
+              <CardContent className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={getDailyRevenueData()}>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
+                    <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                    <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+                    <Tooltip contentStyle={{ background: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }} />
+                    <Line type="monotone" dataKey="revenue" stroke="var(--primary)" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Sales by Category */}
+            <Card className="border border-border/60 bg-card/50 backdrop-blur-md">
+              <CardHeader>
+                <CardTitle className="text-base font-semibold">Revenue by Product Category</CardTitle>
+              </CardHeader>
+              <CardContent className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={getCategoryData()}>
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
+                    <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                    <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
+                    <Tooltip contentStyle={{ background: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }} />
+                    <Bar dataKey="value" fill="#8884d8" radius={[4, 4, 0, 0]}>
+                      {getCategoryData().map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Order Status Distribution */}
+            <Card className="border border-border/60 bg-card/50 backdrop-blur-md lg:col-span-2">
+              <CardHeader>
+                <CardTitle className="text-base font-semibold">Order Fulfillment Status</CardTitle>
+              </CardHeader>
+              <CardContent className="h-80 flex flex-col sm:flex-row items-center justify-around">
+                <div className="w-full sm:w-1/2 h-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={getStatusData()}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                      >
+                        {getStatusData().map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={STATUS_COLORS[entry.name.toLowerCase()] || COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip contentStyle={{ background: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="flex flex-col gap-2 mt-4 sm:mt-0">
+                  {getStatusData().map((entry, index) => (
+                    <div key={entry.name} className="flex items-center gap-2">
+                      <div className="w-3.5 h-3.5 rounded-full" style={{ backgroundColor: STATUS_COLORS[entry.name.toLowerCase()] || COLORS[index % COLORS.length] }} />
+                      <span className="text-sm font-medium">{entry.name}: <span className="text-muted-foreground">({entry.value} orders)</span></span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
