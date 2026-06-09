@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { authAPI } from '../services/api';
 import { Button } from '../app/components/ui/button';
@@ -8,19 +9,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ap
 import { Separator } from '../app/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../app/components/ui/tabs';
 import { Badge } from '../app/components/ui/badge';
-import { User, Mail, Phone, MapPin, Save, Lock, Camera, Trash2, ImagePlus } from 'lucide-react';
+import { User, Mail, Phone, MapPin, Save, Lock, Camera, Trash2, ImagePlus, LogOut } from 'lucide-react';
 import { validateEmail, validatePassword } from '../utils/authValidation';
 import { processProfilePhoto } from '../utils/profilePhoto';
 import UserAvatar from '../components/UserAvatar';
 import { toast } from 'sonner';
 
 export default function Profile() {
-  const { user, updateProfile } = useAuth();
+  const { user, updateProfile, logout } = useAuth();
+  const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [photoPreview, setPhotoPreview] = useState<string | undefined>();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch {
+      toast.error('Failed to logout');
+    }
+  };
 
   const [profile, setProfile] = useState({
     name: '',
@@ -238,14 +249,25 @@ export default function Profile() {
 
           <Separator className="my-6" />
 
-          <div className="flex items-center gap-4">
-            <div>
-              <p className="font-semibold text-lg">{user.name}</p>
-              <p className="text-sm text-muted-foreground">{user.email}</p>
-              <Badge variant="outline" className="mt-1 capitalize">
-                {user.role}
-              </Badge>
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-4">
+              <div>
+                <p className="font-semibold text-lg">{user.name}</p>
+                <p className="text-sm text-muted-foreground">{user.email}</p>
+                <Badge variant="outline" className="mt-1 capitalize">
+                  {user.role}
+                </Badge>
+              </div>
             </div>
+            <Button
+              type="button"
+              variant="outline"
+              className="text-destructive border-destructive/20 hover:bg-destructive/10 shrink-0"
+              onClick={handleLogout}
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
           </div>
         </CardContent>
       </Card>
