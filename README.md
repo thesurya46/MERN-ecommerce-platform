@@ -12,7 +12,7 @@ A full-featured e-commerce platform built with React, TypeScript, and Tailwind C
 - **Multi-Step Checkout**: Shipping address, payment method selection, order review
 - **Order History**: View past orders with status tracking (pending → processing → shipped → delivered)
 - **User Authentication**: Sign up, login, JWT-based authentication 
-- **Admin Dashboard**: Product management (CRUD), order management, inventory updates
+- **Admin Dashboard**: Product management (CRUD), order management, inventory updates 
 - **Responsive Design**: Mobile-friendly UI with Tailwind CSS
 - **Review System**: Users can rate and review products
 
