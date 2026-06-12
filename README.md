@@ -64,7 +64,7 @@ src/
 └── types/             
     └── index.ts         # TypeScript interfaces 
 ```
-
+ 
 ## Getting Started 
 
 ### Installation
