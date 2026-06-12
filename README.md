@@ -52,7 +52,7 @@ src/
 │   ├── Home.tsx         # Landing page with featured products
 │   ├── Products.tsx     # Product catalog with filters
 │   ├── ProductDetail.tsx # Product detail page
-│   ├── Cart.tsx         # Shopping cart
+│   ├── Cart.tsx         # Shopping cart 
 │   ├── Checkout.tsx     # Multi-step checkout
 │   ├── Orders.tsx       # Order history
 │   ├── OrderDetail.tsx  # Order tracking 
