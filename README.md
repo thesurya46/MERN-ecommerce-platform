@@ -7,7 +7,7 @@ A full-featured e-commerce platform built with React, TypeScript, and Tailwind C
 ### Frontend Features 
 - **Product Catalog**: Grid view with filtering by category, price range, and ratings 
 - **Advanced Search**: Real-time search with sorting options (price, rating, newest)
-- **Product Detail Pages**: Full product information, multiple images, reviews, and ratings 
+- **Product Detail Pages**: Full product information, multiple images, reviews, and ratings  
 - **Shopping Cart**: Add/remove items, adjust quantities, persisted to localStorage
 - **Multi-Step Checkout**: Shipping address, payment method selection, order review
 - **Order History**: View past orders with status tracking (pending → processing → shipped → delivered)
