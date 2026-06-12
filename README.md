@@ -17,7 +17,7 @@ A full-featured e-commerce platform built with React, TypeScript, and Tailwind C
 - **Review System**: Users can rate and review products
 
 ### Mock Backend APIs  
-Located in `src/services/api.ts`:
+Located in `src/services/api.ts`: 
 - **Product API**: GET products with filters, GET single product, POST/PUT/DELETE (admin)
 - **User API**: Registration, login, profile management
 - **Cart API**: Add to cart, remove items, update quantities
