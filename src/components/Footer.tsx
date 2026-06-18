@@ -57,15 +57,15 @@ export default function Footer() {
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li className="flex items-start gap-2">
                 <MapPin className="h-4 w-4 mt-0.5 shrink-0" />
-                <span>123 Commerce Street, New York, NY 10001</span>
+                <span>Bhanpur, Cuttack , Odisha </span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-4 w-4 shrink-0" />
-                <a href="tel:+18005551234" className="hover:text-foreground">+1 (800) 555-1234</a>
+                <a href="tel:+91 8112140706" className="hover:text-foreground">+1 (800) 555-1234</a>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-4 w-4 shrink-0" />
-                <a href="mailto:support@shophub.com" className="hover:text-foreground">support@shophub.com</a>
+                <a href="mailto:work.suryasnata@gmail.com" className="hover:text-foreground">support@shophub.com</a>
               </li>
             </ul>
           </div>
