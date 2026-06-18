@@ -26,10 +26,12 @@ import {
 import { toast } from 'sonner';
 import Newsletter from '../components/Newsletter';
 import ProductSection from '../components/ProductSection';
+import TopCategorySection from '../components/TopCategorySection';
 import { formatINR, FREE_SHIPPING_MIN_INR } from '../utils/currency';
 import { Product } from '../types';
 
 const categoryCards = [
+
   { name: 'Electronics', slug: 'Electronics', icon: Laptop, image: 'https://images.unsplash.com/photo-1498049794561-7780e7231661?w=600' },
   { name: 'Accessories', slug: 'Accessories', icon: Sparkles, image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600' },
   { name: 'Sports', slug: 'Sports', icon: Dumbbell, image: 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=600' },
@@ -227,6 +229,56 @@ export default function Home() {
         </div>
       </section>
 
+      {(() => {
+        const all = [...new Set([...featuredProducts, ...bestSellers, ...newArrivals])];
+        const mobiles = all.filter((p) =>
+          /iphone|samsung|vivo|oppo|realme/i.test(p.name)
+        );
+        const laptops = all.filter((p) => /laptop/i.test(p.name));
+        const tablets = all.filter((p) => /tablet|ipad/i.test(p.name));
+
+        return (
+          <>
+            <div className="bg-muted/30">
+              <TopCategorySection
+                title="Mobiles"
+                subtitle="Samsung, Vivo, OPPO, Realme & iPhone"
+                products={mobiles.slice(0, 8)}
+                wishlistIds={wishlistIds}
+                badgeLabel="Mobile"
+                onToggleWishlist={handleToggleWishlist}
+                onAddToCart={handleAddToCart}
+                viewAllCategory="Electronics"
+              />
+            </div>
+
+            <TopCategorySection
+              title="Laptops"
+              subtitle="Work, study & creativity-ready"
+              products={laptops.slice(0, 8)}
+              wishlistIds={wishlistIds}
+              badgeLabel="Laptop"
+              onToggleWishlist={handleToggleWishlist}
+              onAddToCart={handleAddToCart}
+              viewAllCategory="Electronics"
+            />
+
+            <div className="bg-muted/30">
+              <TopCategorySection
+                title="Tablets"
+                subtitle="iPad & tablet essentials"
+                products={tablets.slice(0, 8)}
+                wishlistIds={wishlistIds}
+                badgeLabel="Tablet"
+                onToggleWishlist={handleToggleWishlist}
+                onAddToCart={handleAddToCart}
+                viewAllCategory="Electronics"
+              />
+            </div>
+          </>
+        );
+      })()}
+
       <ProductSection
         title="Featured Products"
         subtitle="Handpicked favourites for you"
@@ -236,6 +288,7 @@ export default function Home() {
         onToggleWishlist={handleToggleWishlist}
         onAddToCart={handleAddToCart}
       />
+
 
       <ProductSection
         title="Best Sellers"
