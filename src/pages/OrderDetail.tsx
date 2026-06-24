@@ -8,6 +8,7 @@ import { Button } from '../app/components/ui/button';
 import { Separator } from '../app/components/ui/separator';
 import { ArrowLeft, Package, Truck, CheckCircle, XCircle } from 'lucide-react';
 import { formatINR } from '../utils/currency';
+import { getProductImage } from '../utils/productImage';
 
 export default function OrderDetail() {
   const { id } = useParams<{ id: string }>();
@@ -170,7 +171,7 @@ export default function OrderDetail() {
                   <div key={item.productId} className="flex gap-4">
                     <div className="w-20 h-20 rounded overflow-hidden flex-shrink-0">
                       <img
-                        src={item.product.images[0]}
+                        src={getProductImage(item.product.images)}
                         alt={item.product.name}
                         className="w-full h-full object-cover"
                       />

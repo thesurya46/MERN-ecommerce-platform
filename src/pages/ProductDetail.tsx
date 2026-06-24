@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../app/components/ui/t
 import { Star, ShoppingCart, Minus, Plus, ArrowLeft, Heart } from 'lucide-react';
 import { toast } from 'sonner';
 import { formatINR } from '../utils/currency';
+import { getProductImage } from '../utils/productImage';
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -172,7 +173,7 @@ export default function ProductDetail() {
         <div>
           <div className="aspect-square overflow-hidden rounded-lg mb-4">
             <img
-              src={product.images[selectedImage]}
+              src={getProductImage(product.images)}
               alt={product.name}
               className="w-full h-full object-cover"
             />
@@ -187,7 +188,7 @@ export default function ProductDetail() {
                     selectedImage === idx ? 'border-primary' : 'border-transparent'
                   }`}
                 >
-                  <img src={image} alt={`${product.name} ${idx + 1}`} className="w-full h-full object-cover" />
+                  <img src={getProductImage([image])} alt={`${product.name} ${idx + 1}`} className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
@@ -405,7 +406,7 @@ export default function ProductDetail() {
                 <Card className="overflow-hidden hover:shadow-lg transition-all duration-300 h-full flex flex-col relative group">
                   <div className="aspect-square overflow-hidden relative">
                     <img
-                      src={p.images[0]}
+                      src={getProductImage(p.images)}
                       alt={p.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />

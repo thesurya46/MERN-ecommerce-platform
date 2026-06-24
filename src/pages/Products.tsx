@@ -5,6 +5,7 @@ import { productAPI, wishlistAPI } from '../services/api';
 import { useCart } from '../contexts/CartContext';
 import { categories } from '../data/mockData';
 import { Button } from '../app/components/ui/button';
+import { getProductImage } from '../utils/productImage';
 import { Input } from '../app/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader } from '../app/components/ui/card';
 import { Badge } from '../app/components/ui/badge';
@@ -268,7 +269,7 @@ export default function Products() {
 
                     <div className="aspect-square overflow-hidden relative">
                       <img
-                        src={product.images[0]}
+                        src={getProductImage(product.images)}
                         alt={product.name}
                         className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                       />

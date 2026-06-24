@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter } from '../app/components/ui/card';
 import { Badge } from '../app/components/ui/badge';
 import { Star, ShoppingCart, Heart } from 'lucide-react';
 import { formatINR } from '../utils/currency';
+import { getProductImage } from '../utils/productImage';
 
 interface ProductGridProps {
   products: Product[];
@@ -43,7 +44,7 @@ export default function ProductGrid({
             </Button>
             <div className="aspect-square overflow-hidden relative">
               <img
-                src={product.images[0]}
+                src={getProductImage(product.images)}
                 alt={product.name}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />

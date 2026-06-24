@@ -4,6 +4,7 @@ import { Product } from '../types';
 import { wishlistAPI } from '../services/api';
 import { useCart } from '../contexts/CartContext';
 import { Button } from '../app/components/ui/button';
+import { getProductImage } from '../utils/productImage';
 import { Card, CardContent, CardFooter } from '../app/components/ui/card';
 import { Star, ShoppingCart, Trash2, Heart } from 'lucide-react';
 import { toast } from 'sonner';
@@ -113,7 +114,7 @@ export default function Wishlist() {
                 
                 <div className="aspect-square overflow-hidden relative">
                   <img
-                    src={product.images[0]}
+                    src={getProductImage(product.images)}
                     alt={product.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />

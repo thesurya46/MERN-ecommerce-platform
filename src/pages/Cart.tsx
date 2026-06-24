@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../app/components/ui/button';
+import { getProductImage } from '../utils/productImage';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../app/components/ui/card';
 import { Input } from '../app/components/ui/input';
 import { Separator } from '../app/components/ui/separator';
@@ -72,7 +73,7 @@ export default function Cart() {
                 <div className="flex gap-4">
                   <div className="w-24 h-24 rounded overflow-hidden flex-shrink-0">
                     <img
-                      src={item.product.images[0]}
+                      src={getProductImage(item.product.images)}
                       alt={item.product.name}
                       className="w-full h-full object-cover"
                     />

@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import { formatINR } from '../utils/currency';
 import { Package, ShoppingBag, DollarSign, Users, Edit, Trash2 } from 'lucide-react';
 import { categories } from '../data/mockData';
+import { getProductImage } from '../utils/productImage';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 
 const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7300', '#0088fe', '#00c49f', '#ffbb28', '#ff8042'];
@@ -362,7 +363,7 @@ export default function Admin() {
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <img
-                            src={product.images[0]}
+                            src={getProductImage(product.images)}
                             alt={product.name}
                             className="w-12 h-12 rounded object-cover"
                           />
