@@ -36,17 +36,17 @@ export default function OrderDetail() {
   const getStatusColor = (status: Order['status']) => {
     switch (status) {
       case 'pending':
-        return 'bg-yellow-500';
+        return 'bg-yellow-500 text-slate-900';
       case 'processing':
-        return 'bg-blue-500';
+        return 'bg-amber-500 text-slate-900';
       case 'shipped':
-        return 'bg-purple-500';
+        return 'bg-yellow-600 text-white';
       case 'delivered':
-        return 'bg-green-500';
+        return 'bg-slate-900 text-white';
       case 'cancelled':
-        return 'bg-red-500';
+        return 'bg-red-500 text-white';
       default:
-        return 'bg-gray-500';
+        return 'bg-gray-500 text-white';
     }
   };
 
@@ -104,22 +104,22 @@ export default function OrderDetail() {
   const steps = getStatusSteps();
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Button variant="ghost" onClick={() => navigate('/orders')} className="mb-6">
+    <div className="container mx-auto px-4 py-8 bg-gradient-to-br from-white via-amber-50 to-yellow-50 rounded-3xl shadow-sm">
+      <Button variant="ghost" onClick={() => navigate('/orders')} className="mb-6 rounded-full border border-yellow-200 bg-white/90 text-slate-900 shadow-sm hover:bg-amber-100 transition-colors">
         <ArrowLeft className="h-4 w-4 mr-2" />
         Back to Orders
       </Button>
 
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl">Order #{order.id}</h1>
-        <Badge className={getStatusColor(order.status)}>
+        <h1 className="text-3xl font-bold text-slate-900">Order #{order.id}</h1>
+        <Badge className={`rounded-full px-3 py-1 text-sm font-medium ${getStatusColor(order.status)}`}>
           {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
         </Badge>
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-6">
-          <Card>
+          <Card className="border border-yellow-200 bg-white/90 shadow-sm">
             <CardHeader>
               <CardTitle>Order Status</CardTitle>
             </CardHeader>
@@ -135,7 +135,7 @@ export default function OrderDetail() {
                               ? 'bg-red-500 text-white'
                               : 'bg-muted text-muted-foreground'
                             : idx <= activeStep
-                            ? 'bg-primary text-primary-foreground'
+                            ? 'bg-yellow-500 text-slate-900 shadow-sm'
                             : 'bg-muted text-muted-foreground'
                         }`}
                       >
@@ -160,7 +160,7 @@ export default function OrderDetail() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border border-yellow-200 bg-white/90 shadow-sm">
             <CardHeader>
               <CardTitle>Order Items</CardTitle>
             </CardHeader>
@@ -191,7 +191,7 @@ export default function OrderDetail() {
         </div>
 
         <div className="space-y-6">
-          <Card>
+          <Card className="border border-yellow-200 bg-white/90 shadow-sm">
             <CardHeader>
               <CardTitle>Order Summary</CardTitle>
             </CardHeader>
@@ -223,7 +223,7 @@ export default function OrderDetail() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border border-yellow-200 bg-white/90 shadow-sm">
             <CardHeader>
               <CardTitle>Shipping Address</CardTitle>
             </CardHeader>
@@ -239,7 +239,7 @@ export default function OrderDetail() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="border border-yellow-200 bg-white/90 shadow-sm">
             <CardHeader>
               <CardTitle>Payment Method</CardTitle>
             </CardHeader>
