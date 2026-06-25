@@ -138,6 +138,39 @@ export default function Cart() {
               <CardTitle>Order Summary</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">Available Coupons</span>
+                <div className="grid grid-cols-2 gap-2">
+                  {Object.entries(PROMO_CODES).map(([code, info]) => {
+                    const isApplied = appliedPromo === code;
+                    return (
+                      <button
+                        key={code}
+                        type="button"
+                        onClick={() => {
+                          if (isApplied) {
+                            setAppliedPromo(null);
+                            setPromoCode('');
+                            toast.success('Promo code removed');
+                          } else {
+                            setPromoCode(code);
+                            setAppliedPromo(code);
+                            toast.success(`Promo applied: ${info.label}`);
+                          }
+                        }}
+                        className={`text-left p-2.5 rounded-lg border text-xs transition-all flex flex-col justify-between hover:border-primary/50 cursor-pointer ${
+                          isApplied
+                            ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20'
+                            : 'border-border bg-card hover:bg-muted/40'
+                        }`}
+                      >
+                        <span className="font-bold text-foreground">{code}</span>
+                        <span className="text-[10px] text-muted-foreground">{info.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
               <div className="flex gap-2">
                 <Input
                   placeholder="Promo code"
@@ -150,9 +183,22 @@ export default function Cart() {
                 </Button>
               </div>
               {appliedPromo && (
-                <Badge variant="secondary" className="w-fit">
-                  {appliedPromo} — {PROMO_CODES[appliedPromo].label}
-                </Badge>
+                <div className="flex items-center justify-between bg-emerald-50 dark:bg-emerald-950/20 p-2 border border-emerald-200 dark:border-emerald-900 rounded text-xs">
+                  <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                    {appliedPromo} ({PROMO_CODES[appliedPromo].label})
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAppliedPromo(null);
+                      setPromoCode('');
+                      toast.success('Promo code removed');
+                    }}
+                    className="text-[10px] text-destructive hover:underline cursor-pointer"
+                  >
+                    Remove
+                  </button>
+                </div>
               )}
               {subtotal > 0 && subtotal < FREE_SHIPPING_MIN_INR && (
                 <p className="text-xs text-muted-foreground flex items-center gap-1">

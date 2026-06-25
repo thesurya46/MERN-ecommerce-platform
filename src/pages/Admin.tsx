@@ -250,6 +250,26 @@ export default function Admin() {
         </TabsList>
 
         <TabsContent value="products" className="space-y-4">
+          {products.some(p => p.stock < 10) && (
+            <Card className="border-amber-200 bg-amber-50/50 dark:border-amber-900/50 dark:bg-amber-950/10">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-bold text-amber-700 dark:text-amber-400 flex items-center gap-2">
+                  ⚠️ Inventory Alert: Low Stock Items
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-xs text-muted-foreground space-y-1">
+                <p>The following items are running low on stock and may require reordering soon:</p>
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {products.filter(p => p.stock < 10).map(p => (
+                    <Badge key={p.id} variant="outline" className="border-amber-300 bg-background text-amber-800 dark:text-amber-400">
+                      {p.name}: {p.stock} left
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           <div className="flex justify-between items-center">
             <h2 className="text-xl">Product Management</h2>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -466,8 +486,8 @@ export default function Admin() {
                   <LineChart data={getDailyRevenueData()}>
                     <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
                     <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
-                    <Tooltip contentStyle={{ background: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }} />
+                    <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${value}`} />
+                    <Tooltip formatter={(value: any) => formatINR(value)} contentStyle={{ background: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }} />
                     <Line type="monotone" dataKey="revenue" stroke="var(--primary)" strokeWidth={2} dot={{ r: 4 }} activeDot={{ r: 6 }} />
                   </LineChart>
                 </ResponsiveContainer>
@@ -484,8 +504,8 @@ export default function Admin() {
                   <BarChart data={getCategoryData()}>
                     <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
                     <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                    <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `$${value}`} />
-                    <Tooltip contentStyle={{ background: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }} />
+                    <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `₹${value}`} />
+                    <Tooltip formatter={(value: any) => formatINR(value)} contentStyle={{ background: 'hsl(var(--background))', borderColor: 'hsl(var(--border))' }} />
                     <Bar dataKey="value" fill="#8884d8" radius={[4, 4, 0, 0]}>
                       {getCategoryData().map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

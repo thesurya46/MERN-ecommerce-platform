@@ -53,6 +53,8 @@ export interface PaymentMethod {
   cardHolder?: string;
   expiryDate?: string;
   cvv?: string;
+  upiId?: string;
+  bankName?: string;
 }
 
 export interface Order {

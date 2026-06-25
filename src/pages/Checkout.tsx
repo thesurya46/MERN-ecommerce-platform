@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -36,20 +36,74 @@ export default function Checkout() {
     cardNumber: '',
     cardHolder: '',
     expiryDate: '',
-    cvv: ''
+    cvv: '',
+    upiId: '',
+    bankName: ''
   });
 
   const [promoInput, setPromoInput] = useState('');
   const [appliedCode, setAppliedCode] = useState('');
   const [discountPercent, setDiscountPercent] = useState(0);
 
+  const [timer, setTimer] = useState(120);
+  const [upiVerified, setUpiVerified] = useState(false);
+
+  useEffect(() => {
+    let intervalId: any;
+    if (step === 2 && paymentMethod.type === 'upi' && timer > 0) {
+      intervalId = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [step, paymentMethod.type, timer]);
+
+  useEffect(() => {
+    if (paymentMethod.type === 'upi') {
+      setTimer(120);
+      setUpiVerified(false);
+    }
+  }, [paymentMethod.type]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const handleVerifyUpiId = () => {
+    if (!paymentMethod.upiId || !paymentMethod.upiId.trim() || !paymentMethod.upiId.includes('@')) {
+      toast.error('Please enter a valid UPI ID (e.g. user@okaxis)');
+      return;
+    }
+    setUpiVerified(true);
+    toast.success('UPI ID verified successfully!');
+  };
+
   const handleShippingSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setStep(2);
   };
 
+  const [qrPaid, setQrPaid] = useState(false);
+
+  const handleSimulateQrPay = () => {
+    setQrPaid(true);
+    toast.success('Mock payment successfully simulated!');
+  };
+
   const handlePaymentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (paymentMethod.type === 'upi' && !upiVerified && !qrPaid) {
+      toast.error('Please verify your UPI ID, or click "Simulate Payment Success" on the QR Code.');
+      return;
+    }
+    if (paymentMethod.type === 'netbanking' && !paymentMethod.bankName) {
+      toast.error('Please select a banking partner.');
+      return;
+    }
     setStep(3);
   };
 
@@ -328,6 +382,116 @@ export default function Checkout() {
                     </div>
                   )}
 
+                  {paymentMethod.type === 'upi' && (
+                    <div className="space-y-4 mt-4 p-4 border border-primary/20 bg-primary/5 rounded-lg">
+                      <div className="flex flex-col items-center text-center space-y-3">
+                        <span className="text-xs font-semibold uppercase tracking-wider text-primary">Scan QR Code with any UPI App</span>
+                        
+                        {/* Mock QR Code */}
+                        <div className="w-44 h-44 bg-white p-3 rounded-lg border border-border flex flex-col items-center justify-center relative shadow-sm">
+                          <svg className="w-full h-full text-slate-800" viewBox="0 0 100 100" fill="currentColor">
+                            <path d="M5 5h30v30H5V5zm3 3v24h24V8H8z" />
+                            <path d="M65 5h30v30H65V5zm3 3v24h24V8H68z" />
+                            <path d="M5 65h30v30H5V65zm3 3v24h24V68H8z" />
+                            <path d="M12 12h5v5h-5zm0 14h5v5h-5zm14 0h5v5h-5zm0-14h5v5h-5zM72 12h5v5h-5zm0 14h5v5h-5zm14 0h5v5h-5zm0-14h5v5h-5zM12 72h5v5h-5zm0 14h5v5h-5zm14 0h5v5h-5zm0-14h5v5h-5z" />
+                            <path d="M45 10h10v10H45zm0 20h10v5H45zm0 10h5v15h-5zm10 5h5v5h-5zm-20 5h5v5h-5zm30-10h10v5H55zm10 15h5v10h-5zm-15 5h10v5H40zm25 5h15v5H65zm-20 5h10v5H45z" />
+                            <path d="M45 45h10v10H45z" />
+                          </svg>
+                          {qrPaid && (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center bg-white/95 rounded-lg transition-opacity duration-300">
+                              <Check className="h-10 w-10 text-emerald-500 mb-1 animate-bounce" />
+                              <span className="text-xs font-bold text-emerald-600 font-semibold">Payment Received!</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Countdown Timer */}
+                        <div className="text-sm font-semibold text-amber-600" id="upi-timer">
+                          {timer > 0 ? `QR Code expires in: ${formatTime(timer)}` : 'QR Code expired! Please refresh.'}
+                        </div>
+
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant={qrPaid ? "secondary" : "outline"}
+                          onClick={handleSimulateQrPay}
+                          disabled={qrPaid || timer <= 0}
+                          className="w-full max-w-[200px]"
+                        >
+                          {qrPaid ? 'Simulated Success' : 'Simulate Scan & Pay'}
+                        </Button>
+
+                        <div className="flex items-center gap-2 w-full">
+                          <Separator className="flex-1" />
+                          <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">or</span>
+                          <Separator className="flex-1" />
+                        </div>
+
+                        {/* UPI ID Form */}
+                        <div className="w-full text-left space-y-2">
+                          <Label htmlFor="upiId">Enter UPI ID</Label>
+                          <div className="flex gap-2">
+                            <Input
+                              id="upiId"
+                              placeholder="e.g. name@upi"
+                              value={paymentMethod.upiId || ''}
+                              onChange={(e) =>
+                                setPaymentMethod({ ...paymentMethod, upiId: e.target.value })
+                              }
+                              disabled={qrPaid}
+                              className="bg-background h-10"
+                            />
+                            <Button
+                              type="button"
+                              onClick={handleVerifyUpiId}
+                              disabled={qrPaid}
+                              variant={upiVerified ? 'secondary' : 'default'}
+                              className={upiVerified ? 'bg-emerald-600 text-white hover:bg-emerald-700 h-10 shrink-0' : 'h-10 shrink-0'}
+                            >
+                              {upiVerified ? 'Verified ✓' : 'Verify'}
+                            </Button>
+                          </div>
+                          {upiVerified && (
+                            <p className="text-xs text-emerald-600 font-medium">✓ UPI ID is valid.</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {paymentMethod.type === 'netbanking' && (
+                    <div className="space-y-3 mt-4 p-4 border border-primary/20 bg-primary/5 rounded-lg text-left">
+                      <Label htmlFor="bank" className="font-semibold text-sm">Select Your Bank</Label>
+                      <Select
+                        value={paymentMethod.bankName || ''}
+                        onValueChange={(value) =>
+                          setPaymentMethod({ ...paymentMethod, bankName: value })
+                        }
+                      >
+                        <SelectTrigger className="bg-background h-10">
+                          <SelectValue placeholder="Choose a bank" />
+                        </SelectTrigger>
+                        <SelectContent className="z-[200]">
+                          <SelectItem value="sbi">State Bank of India (SBI)</SelectItem>
+                          <SelectItem value="hdfc">HDFC Bank</SelectItem>
+                          <SelectItem value="icici">ICICI Bank</SelectItem>
+                          <SelectItem value="axis">Axis Bank</SelectItem>
+                          <SelectItem value="kotak">Kotak Mahindra Bank</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-muted-foreground">Redirecting to bank security portal upon confirmation.</p>
+                    </div>
+                  )}
+
+                  {paymentMethod.type === 'cod' && (
+                    <div className="mt-4 p-4 border border-amber-200 bg-amber-50/50 dark:border-amber-900/50 dark:bg-amber-950/10 rounded-lg text-left text-sm text-slate-800 dark:text-slate-200">
+                      <p className="font-semibold text-amber-700 dark:text-amber-400 mb-1">Cash on Delivery (COD)</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        Please keep the exact cash amount ready upon delivery. A verification call might be placed to confirm your order details before shipping.
+                      </p>
+                    </div>
+                  )}
+
                   <div className="flex gap-4">
                     <Button type="button" variant="outline" onClick={() => setStep(1)} className="flex-1">
                       Back
@@ -441,7 +605,42 @@ export default function Checkout() {
               )}
               <Separator />
               <div className="space-y-2">
-                <Label htmlFor="promo" className="text-xs text-muted-foreground uppercase font-bold tracking-wider">Promo Code</Label>
+                <Label className="text-xs text-muted-foreground uppercase font-bold tracking-wider block">Available Coupons</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { code: 'SAVE10', discount: 10, label: '10% off' },
+                    { code: 'WELCOME20', discount: 20, label: '20% off' }
+                  ].map((coupon) => {
+                    const isApplied = appliedCode === coupon.code;
+                    return (
+                      <button
+                        key={coupon.code}
+                        type="button"
+                        onClick={() => {
+                          if (isApplied) {
+                            handleRemovePromo();
+                          } else {
+                            setAppliedCode(coupon.code);
+                            setDiscountPercent(coupon.discount);
+                            setPromoInput(coupon.code);
+                            toast.success(`Promo applied: ${coupon.label}`);
+                          }
+                        }}
+                        className={`text-left p-2 rounded border text-[11px] transition-all flex flex-col justify-between hover:border-primary/50 cursor-pointer ${
+                          isApplied
+                            ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/20'
+                            : 'border-border bg-card hover:bg-muted/40'
+                        }`}
+                      >
+                        <span className="font-bold text-foreground text-[10px]">{coupon.code}</span>
+                        <span className="text-[9px] text-muted-foreground">{coupon.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="promo" className="text-xs text-muted-foreground uppercase font-bold tracking-wider">Or Enter Promo Code</Label>
                 {appliedCode ? (
                   <div className="flex items-center justify-between bg-emerald-50 dark:bg-emerald-950/20 p-2 border border-emerald-200 dark:border-emerald-900 rounded text-sm">
                     <span className="font-semibold text-emerald-600 dark:text-emerald-400">{appliedCode} ({discountPercent}% Off)</span>

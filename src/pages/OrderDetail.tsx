@@ -9,6 +9,7 @@ import { Separator } from '../app/components/ui/separator';
 import { ArrowLeft, Package, Truck, CheckCircle, XCircle } from 'lucide-react';
 import { formatINR } from '../utils/currency';
 import { getProductImage } from '../utils/productImage';
+import { toast } from 'sonner';
 
 export default function OrderDetail() {
   const { id } = useParams<{ id: string }>();
@@ -31,6 +32,19 @@ export default function OrderDetail() {
       console.error('Failed to load order:', error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleCancelOrder = async () => {
+    if (!order) return;
+    if (!confirm('Are you sure you want to cancel this order?')) return;
+
+    try {
+      const updated = await orderAPI.updateOrderStatus(order.id, 'cancelled');
+      setOrder(updated);
+      toast.success('Order cancelled successfully.');
+    } catch (error) {
+      toast.error('Failed to cancel order.');
     }
   };
 
@@ -111,11 +125,22 @@ export default function OrderDetail() {
         Back to Orders
       </Button>
 
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold text-slate-900">Order #{order.id}</h1>
-        <Badge className={`rounded-full px-3 py-1 text-sm font-medium ${getStatusColor(order.status)}`}>
-          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-        </Badge>
+      <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
+        <div className="flex items-center gap-4 flex-wrap">
+          <h1 className="text-3xl font-bold text-slate-900">Order #{order.id}</h1>
+          <Badge className={`rounded-full px-3 py-1 text-sm font-medium ${getStatusColor(order.status)}`}>
+            {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+          </Badge>
+        </div>
+        {(order.status === 'pending' || order.status === 'processing') && (
+          <Button
+            variant="destructive"
+            onClick={handleCancelOrder}
+            className="rounded-full shadow-sm hover:scale-102 transition-transform cursor-pointer"
+          >
+            Cancel Order
+          </Button>
+        )}
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
