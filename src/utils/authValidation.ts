@@ -45,6 +45,10 @@ export function validatePassword(password: string): string | null {
     return 'Password must be at least 8 characters';
   }
 
+  if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+    return 'Password must include at least one uppercase letter and one number';
+  }
+
   return null;
 }
 

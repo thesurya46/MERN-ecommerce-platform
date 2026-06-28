@@ -6,6 +6,9 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 const CREDENTIALS_KEY = 'user_credentials';
 const REGISTERED_USERS_KEY = 'registered_users';
+const AUTH_TOKEN_KEY = 'auth_token';
+const CURRENT_USER_KEY = 'current_user';
+const TOKEN_TTL_MS = 1000 * 60 * 60 * 8;
 
 function loadPersistedUsers(): void {
   try {
@@ -39,14 +42,54 @@ function getStoredCredentials(): Record<string, string> {
   }
 }
 
-function saveCredential(email: string, password: string): void {
+async function hashPassword(password: string): Promise<string> {
+  const data = new TextEncoder().encode(password);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+async function saveCredential(email: string, password: string): Promise<void> {
   const credentials = getStoredCredentials();
-  credentials[normalizeEmail(email)] = password;
+  credentials[normalizeEmail(email)] = await hashPassword(password);
   localStorage.setItem(CREDENTIALS_KEY, JSON.stringify(credentials));
 }
 
 function getStoredPassword(email: string): string | undefined {
   return getStoredCredentials()[normalizeEmail(email)];
+}
+
+function createAuthToken(userId: string): string {
+  const payload = {
+    userId,
+    exp: Date.now() + TOKEN_TTL_MS,
+    issuedAt: Date.now(),
+  };
+  return btoa(JSON.stringify(payload));
+}
+
+function parseAuthToken(token: string): { userId: string; exp: number } | null {
+  try {
+    const payload = JSON.parse(atob(token));
+    return typeof payload?.userId === 'string' && typeof payload?.exp === 'number'
+      ? payload
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+function persistAuthSession(user: User, token: string): void {
+  sessionStorage.setItem(AUTH_TOKEN_KEY, token);
+  sessionStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
+}
+
+function clearAuthSession(): void {
+  sessionStorage.removeItem(AUTH_TOKEN_KEY);
+  sessionStorage.removeItem(CURRENT_USER_KEY);
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+  localStorage.removeItem(CURRENT_USER_KEY);
 }
 
 export const productAPI = {
@@ -175,15 +218,15 @@ export const authAPI = {
 
     const normalizedEmail = normalizeEmail(email);
     const user = mockUsers.find((u) => normalizeEmail(u.email) === normalizedEmail);
-    const storedPassword = getStoredPassword(normalizedEmail);
+    const storedPasswordHash = getStoredPassword(normalizedEmail);
+    const submittedPasswordHash = await hashPassword(password);
 
-    if (!user || !storedPassword || storedPassword !== password) {
+    if (!user || !storedPasswordHash || storedPasswordHash !== submittedPasswordHash) {
       throw new Error('No account found with this email. Please register first.');
     }
 
-    const token = btoa(JSON.stringify({ userId: user.id, exp: Date.now() + 86400000 }));
-    localStorage.setItem('auth_token', token);
-    localStorage.setItem('current_user', JSON.stringify(user));
+    const token = createAuthToken(user.id);
+    persistAuthSession(user, token);
 
     return { user, token };
   },
@@ -215,25 +258,45 @@ export const authAPI = {
     };
 
     mockUsers.push(newUser);
-    saveCredential(normalizedEmail, password);
+    await saveCredential(normalizedEmail, password);
     persistRegisteredUsers();
 
-    const token = btoa(JSON.stringify({ userId: newUser.id, exp: Date.now() + 86400000 }));
-    localStorage.setItem('auth_token', token);
-    localStorage.setItem('current_user', JSON.stringify(newUser));
+    const token = createAuthToken(newUser.id);
+    persistAuthSession(newUser, token);
 
     return { user: newUser, token };
   },
 
   async logout(): Promise<void> {
     await delay(200);
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('current_user');
+    clearAuthSession();
   },
 
   async getCurrentUser(): Promise<User | null> {
-    const userStr = localStorage.getItem('current_user');
-    return userStr ? JSON.parse(userStr) : null;
+    const token = sessionStorage.getItem(AUTH_TOKEN_KEY);
+    if (!token) {
+      clearAuthSession();
+      return null;
+    }
+
+    const payload = parseAuthToken(token);
+    if (!payload || payload.exp <= Date.now()) {
+      clearAuthSession();
+      return null;
+    }
+
+    const userStr = sessionStorage.getItem(CURRENT_USER_KEY);
+    if (!userStr) {
+      clearAuthSession();
+      return null;
+    }
+
+    try {
+      return JSON.parse(userStr) as User;
+    } catch {
+      clearAuthSession();
+      return null;
+    }
   },
 
   async updateProfile(userId: string, updates: Partial<User>): Promise<User> {
@@ -305,16 +368,17 @@ export const authAPI = {
 
     const user: User = JSON.parse(userStr);
     const normalizedEmail = normalizeEmail(user.email);
-    const storedPassword = getStoredPassword(normalizedEmail);
+    const storedPasswordHash = getStoredPassword(normalizedEmail);
+    const currentPasswordHash = await hashPassword(currentPassword);
 
-    if (!storedPassword || storedPassword !== currentPassword) {
+    if (!storedPasswordHash || storedPasswordHash !== currentPasswordHash) {
       throw new Error('Current password is incorrect');
     }
 
     const passwordError = validatePassword(newPassword);
     if (passwordError) throw new Error(passwordError);
 
-    saveCredential(normalizedEmail, newPassword);
+    await saveCredential(normalizedEmail, newPassword);
   },
 };
 
