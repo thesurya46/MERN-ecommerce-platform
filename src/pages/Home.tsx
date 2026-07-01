@@ -230,10 +230,14 @@ export default function Home() {
       </section>
 
       {(() => {
-        const all = [...new Set([...featuredProducts, ...bestSellers, ...newArrivals])];
-        const mobiles = all.filter((p) =>
-          /iphone|samsung|vivo|oppo|realme/i.test(p.name)
-        );
+        const withImages = (arr: Product[]) => arr.filter((p) => p.images?.some((img) => typeof img === 'string' && img.trim().length > 0));
+
+        const featured = withImages(featuredProducts);
+        const best = withImages(bestSellers);
+        const newest = withImages(newArrivals);
+
+        const all = [...new Set([...featured, ...best, ...newest])] ;
+        const mobiles = all.filter((p) => /iphone|samsung|vivo|oppo|realme/i.test(p.name));
         const laptops = all.filter((p) => /laptop/i.test(p.name));
         const tablets = all.filter((p) => /tablet|ipad/i.test(p.name));
 
@@ -243,7 +247,7 @@ export default function Home() {
               <TopCategorySection
                 title="Mobiles"
                 subtitle="Samsung, Vivo, OPPO, Realme & iPhone"
-                products={mobiles.slice(0, 8)}
+products={mobiles.slice(0, 8)}
                 wishlistIds={wishlistIds}
                 badgeLabel="Mobile"
                 onToggleWishlist={handleToggleWishlist}
@@ -282,7 +286,7 @@ export default function Home() {
       <ProductSection
         title="Featured Products"
         subtitle="Handpicked favourites for you"
-        products={featuredProducts}
+products={featuredProducts.filter((p) => p.images?.some((img) => typeof img === 'string' && img.trim().length > 0))}
         wishlistIds={wishlistIds}
         badgeLabel="Featured"
         onToggleWishlist={handleToggleWishlist}
@@ -290,10 +294,12 @@ export default function Home() {
       />
 
 
+      
+      
       <ProductSection
         title="Best Sellers"
         subtitle="Most loved by shoppers across India"
-        products={bestSellers}
+        products={bestSellers.filter((p) => p.images?.some((img) => typeof img === 'string' && img.trim().length > 0))}
         wishlistIds={wishlistIds}
         badgeLabel="Bestseller"
         onToggleWishlist={handleToggleWishlist}
@@ -304,7 +310,7 @@ export default function Home() {
         <ProductSection
           title="New Arrivals"
           subtitle="Latest additions to our catalogue"
-          products={newArrivals}
+          products={newArrivals.filter((p) => p.images?.some((img) => typeof img === 'string' && img.trim().length > 0))}
           wishlistIds={wishlistIds}
           badgeLabel="New"
           onToggleWishlist={handleToggleWishlist}

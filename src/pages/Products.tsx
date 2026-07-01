@@ -5,7 +5,7 @@ import { productAPI, wishlistAPI } from '../services/api';
 import { useCart } from '../contexts/CartContext';
 import { categories } from '../data/mockData';
 import { Button } from '../app/components/ui/button';
-import { getProductImage } from '../utils/productImage';
+import { hasProductImage, getProductImage } from '../utils/productImage';
 import { Input } from '../app/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader } from '../app/components/ui/card';
 import { Badge } from '../app/components/ui/badge';
@@ -84,7 +84,7 @@ export default function Products() {
     setIsLoading(true);
     try {
       const data = await productAPI.getProducts(filters);
-      setProducts(data);
+      setProducts(data.filter((p) => hasProductImage(p.images)));
     } catch (error) {
       console.error('Failed to load products:', error);
     } finally {
