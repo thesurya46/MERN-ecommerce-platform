@@ -1,0 +1,63 @@
+# Workflow Graph (Architecture Overview)
+
+## Workflow / Data Flow
+
+```mermaid
+flowchart TD
+  U[User] -->|Browse| FE[React Vite Frontend]
+  FE -->|Route| R{React Router}
+
+  R -->|Home| H[Home Page]
+  R -->|Products| P[Products Page]
+  R -->|Product detail| PD[ProductDetail Page]
+  R -->|Search/Filters| S[SearchBar + Filters]
+
+  P --> API1[Mock API Layer: src/services/api.ts]
+  PD --> API1
+  API1 --> MD[(Mock Data: src/data/mockData.ts)]
+
+  R -->|Cart| C[Cart Page]
+  C --> CartCtx[CartContext]
+  CartCtx --> LS[localStorage]
+  C --> API2[Mock Cart API]
+
+  R -->|Checkout| CK[Checkout Page]
+  CK --> Addr[Shipping Address Step]
+  CK --> Pay[Payment Step (Mock)]
+  CK --> Review[Order Review]
+  Pay -->|success/failure| PAYRES[Payment result]
+  CK --> API3[Mock Order API]
+  API3 --> O[(Orders State)]
+
+  U -->|Login/Register| AU[Auth Pages]
+  AU --> AuthCtx[AuthContext (JWT)]
+  AuthCtx --> Store[(localStorage/session)]
+
+  R -->|Orders / Tracking| OD[Orders + OrderDetail]
+  OD --> API4[Mock Order API]
+  API4 --> O
+
+  R -->|Admin| AD[Admin Page]
+  AD --> API5[Admin CRUD: products/orders]
+  API5 --> O
+  API5 --> MD
+
+  FE --> UI[Reusable Components (Navbar/Footer/UI library)]
+```
+
+## Major Modules
+- **Frontend UI**: `src/app/App.tsx`, `src/pages/*`, `src/components/*`
+- **Routing**: React Router
+- **State**: `src/contexts/AuthContext.tsx`, `src/contexts/CartContext.tsx`
+- **API layer**: `src/services/api.ts` (mock endpoints)
+- **Data**: `src/data/mockData.ts`, types in `src/types/index.ts`
+
+## Lifecycle Summary
+1. User navigates product/catalog pages.
+2. Frontend calls mock API/services.
+3. User adds items to cart; cart state persists via localStorage.
+4. User checks out; payment is simulated.
+5. Order is created via mock order API.
+6. User views orders/tracking.
+7. Admin manages products/orders via admin UI.
+
