@@ -2,7 +2,7 @@
  
 ## Workflow / Data Flow
 
-```mermaid
+```mermaid 
 flowchart TD
   U[User] -->|Browse| FE[React Vite Frontend]
   FE -->|Route| R{React Router}
