@@ -14,7 +14,7 @@
 
 This project is a feature-rich e-commerce platform that simulates the workflow of a real online shopping application.
 
-It provides:
+It provides: 
 
 - Product browsing
 - Product search & filtering
