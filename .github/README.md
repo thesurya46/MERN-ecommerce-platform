@@ -1,4 +1,4 @@
-# 🛒 E-Commerce Web Application
+# 🛒 E-Commerce Web Application 
 
 > A modern, responsive, full-stack ready e-commerce web application built with **React + Vite + TypeScript**. The project demonstrates a scalable architecture with authentication, shopping cart, checkout flow, order management, and an admin dashboard using a mock API layer.
 
